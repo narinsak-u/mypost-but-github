@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { PostPopulated } from "@/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import useSavedTab from "../store/use-saved-tab";
+import { queryKeys } from "./keys";
 
 type Props = {
   limit?: number;
@@ -16,7 +17,7 @@ export const useGetPosts = ({ limit, userId }: Props) => {
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, isFetching } =
     useInfiniteQuery({
-      queryKey: isSelected ? ["posts-query", "saved-posts"] : ["posts-query"],
+      queryKey: isSelected ? queryKeys.posts.saved : queryKeys.posts.all,
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
         const query =

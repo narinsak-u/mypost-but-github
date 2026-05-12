@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { PostPopulated } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import useSavedTab from "../store/use-saved-tab";
+import { queryKeys } from "./keys";
 
 const fetchPost = async () => {
   const res = await axios.get(`/api/posts`);
@@ -15,7 +16,7 @@ const useGetSavedCount = () => {
   const { isSelected } = useSavedTab();
 
   const { data: posts } = useQuery({
-    queryKey: ["saved-count"],
+    queryKey: queryKeys.counts.saved,
     queryFn: fetchPost,
   });
 
@@ -23,7 +24,7 @@ const useGetSavedCount = () => {
     [userId: number]: number;
   }>({});
 
-  const countPosts = () => {
+  useEffect(() => {
     if (!posts?.length) return;
 
     const counts: { [userId: number]: number } = {};
@@ -39,31 +40,8 @@ const useGetSavedCount = () => {
     });
 
     setSavedCount(counts);
-  };
-
-  // Count the number of posts for each user
-  //   useEffect(() => {
-  //     fetchPost().then((data) => {
-  //       if (data) {
-  //         setPosts(data);
-  //       }
-  //     });
-  //     countPosts();
-  //   }, []);
-
-  //   useEffect(() => {
-  //     fetchPost().then((data) => {
-  //       if (data) {
-  //         setPosts(data);
-  //       }
-  //     });
-  //   }, []);
-
-  useEffect(() => {
-    countPosts();
   }, [posts]);
 
-  // return useMemo(() => ({ userPostCount }), [posts]);
   return { savedCount };
 };
 

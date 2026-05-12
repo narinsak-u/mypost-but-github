@@ -2,10 +2,11 @@
 
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "./keys";
 
 export const useGetUserList = () => {
   const { data, isFetching } = useQuery({
-    queryKey: ["fetct-user-list"],
+    queryKey: queryKeys.users.all,
     queryFn: async () => {
       const { data } = await axios.get(`/api/user`);
       return data.data || [];

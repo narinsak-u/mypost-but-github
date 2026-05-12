@@ -26,7 +26,7 @@ const CommentItem = ({ comment, post }: Props) => {
         <Link href={`/user/${comment.userId}`} >
           <Avatar className="w-6.25 h-6.25">
             <AvatarImage
-              src={user?.imageUrl ?? "https://github.com/shadcn.png"}
+              src={user?.image ?? "https://github.com/shadcn.png"}
             />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
@@ -35,7 +35,7 @@ const CommentItem = ({ comment, post }: Props) => {
           <div className="flex justify-between w-full gap-1">
             <div className="mb-1 flex gap-1 text-[#ADBAC7] text-xs">
               <Link href={`/user/${comment.userId}`} className="hover:text-[#ADBAC7]">
-                {`${user?.firstName} ${user?.lastName}`}
+                {user?.name}
               </Link>
               <span className="text-[#8B949E]">· {formatDistanceToNow(new Date(comment.createdAt))} ago</span>
             </div>

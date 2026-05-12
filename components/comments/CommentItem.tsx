@@ -6,7 +6,6 @@ import { useGetUser } from "@/hooks/use-get-user";
 import { formatDistanceToNow } from "date-fns";
 import { PostPopulated } from "@/types";
 import OptionMenu from "../OptionMenu";
-import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 
 type Props = {
@@ -16,9 +15,9 @@ type Props = {
 
 const CommentItem = ({ comment, post }: Props) => {
   const { data: user, isFetching } = useGetUser({ userId: comment.userId });
-  const { user: currentUser, isLoaded } = useUser();
+  const { data: currentUser } = useGetUser();
 
-  if (!isLoaded) return null;
+  if (isFetching) return null;
 
   return (
     <div className="mx-6">

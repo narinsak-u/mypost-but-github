@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-This is a social media platform built with Next.js 16, TypeScript, and PostgreSQL (via Prisma). It uses the App Router, TanStack Query for server state, and Clerk for authentication.
+This is a social media platform built with Next.js 16, TypeScript, and PostgreSQL (via Prisma). It uses the App Router, TanStack Query for server state, and Better Auth for authentication.
+
+> See [SKILLS.md](./SKILLS.md) for recommended agent skills for this project.
 
 ## Build & Development Commands
 
@@ -38,6 +40,7 @@ npx prisma studio
 ### Running a Single Test
 
 This project does not currently have a test framework configured. If adding tests:
+
 ```bash
 npm test                    # Run all tests
 npm test -- --watch        # Watch mode
@@ -58,16 +61,16 @@ npm test -- path/to/test   # Run specific test file
 
 ```typescript
 // Good
-import * as React from "react"
-import { useState } from "react"
-import axios from "axios"
-import { useInfiniteQuery } from "@tanstack/react-query"
-import { PostPopulated } from "@/types"
-import { cn } from "@/lib/utils"
-import useSavedTab from "../store/use-saved-tab"
+import * as React from "react";
+import { useState } from "react";
+import axios from "axios";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { PostPopulated } from "@/types";
+import { cn } from "@/lib/utils";
+import useSavedTab from "../store/use-saved-tab";
 
 // Bad - avoid relative paths when @/ alias is available
-import { cn } from "../../lib/utils"
+import { cn } from "../../lib/utils";
 ```
 
 ### Formatting
@@ -76,7 +79,7 @@ import { cn } from "../../lib/utils"
 2. **Use the Prettier Tailwind plugin** for class sorting
 3. **Use `cn()` utility** for merging Tailwind classes:
    ```typescript
-   import { cn } from "@/lib/utils"
+   import { cn } from "@/lib/utils";
    // Usage: <div className={cn("base-class", condition && "conditional-class")} />
    ```
 
@@ -86,35 +89,41 @@ import { cn } from "../../lib/utils"
 2. **Use interface for object shapes** that may be extended:
    ```typescript
    interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-     variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
-     size?: "default" | "sm" | "lg" | "icon"
+     variant?:
+       | "default"
+       | "destructive"
+       | "outline"
+       | "secondary"
+       | "ghost"
+       | "link";
+     size?: "default" | "sm" | "lg" | "icon";
    }
    ```
 3. **Use type for unions, utility types**:
    ```typescript
-   type Props = { limit?: number; userId?: string }
+   type Props = { limit?: number; userId?: string };
    ```
 4. **Export types alongside components** when they're used externally:
    ```typescript
-   export type { ButtonProps }  // Named export for interfaces
-   export { Button }           // Default or named exports for components
+   export type { ButtonProps }; // Named export for interfaces
+   export { Button }; // Default or named exports for components
    ```
 5. **`noUncheckedIndexedAccess` is enabled** - handle array access safely:
    ```typescript
-   const posts = data?.pages.flatMap((page) => page) ?? []
+   const posts = data?.pages.flatMap((page) => page) ?? [];
    ```
 
 ### Naming Conventions
 
-| Element | Convention | Example |
-|---------|-----------|---------|
-| Components | PascalCase | `PostItem.tsx`, `CommentSection.tsx` |
-| Hooks | camelCase with `use` prefix | `useGetPosts.ts`, `useCreatePost.ts` |
-| Utilities | camelCase | `cn()`, `formatDate()` |
-| Types/Interfaces | PascalCase | `PostPopulated`, `UserProfile` |
-| Files (utilities) | kebab-case or camelCase | `utils.ts`, `use-format-date.tsx` |
-| Files (components) | PascalCase matching component | `Button.tsx` |
-| Directories | kebab-case | `components/ui/`, `hooks/` |
+| Element            | Convention                    | Example                              |
+| ------------------ | ----------------------------- | ------------------------------------ |
+| Components         | PascalCase                    | `PostItem.tsx`, `CommentSection.tsx` |
+| Hooks              | camelCase with `use` prefix   | `useGetPosts.ts`, `useCreatePost.ts` |
+| Utilities          | camelCase                     | `cn()`, `formatDate()`               |
+| Types/Interfaces   | PascalCase                    | `PostPopulated`, `UserProfile`       |
+| Files (utilities)  | kebab-case or camelCase       | `utils.ts`, `use-format-date.tsx`    |
+| Files (components) | PascalCase matching component | `Button.tsx`                         |
+| Directories        | kebab-case                    | `components/ui/`, `hooks/`           |
 
 ### React Component Patterns
 
@@ -133,8 +142,8 @@ import { cn } from "../../lib/utils"
    ```typescript
    const buttonVariants = cva("base-class", {
      variants: { variant: { default: "...", outline: "..." } },
-     defaultVariants: { variant: "default" }
-   })
+     defaultVariants: { variant: "default" },
+   });
    ```
 
 ### API Routes (Next.js App Router)
@@ -173,9 +182,9 @@ import { cn } from "../../lib/utils"
 2. **Prisma errors** - return 500 with generic message (don't leak DB details)
 3. **Use `sonner` toasts** for user-facing notifications:
    ```typescript
-   import { toast } from "sonner"
-   toast.success("Post created!")
-   toast.error("Failed to create post")
+   import { toast } from "sonner";
+   toast.success("Post created!");
+   toast.error("Failed to create post");
    ```
 
 ## Project Structure
@@ -210,40 +219,47 @@ import { cn } from "../../lib/utils"
 ## Common Patterns
 
 ### Zustand Store (client state)
+
 ```typescript
 // store/use-saved-tab.ts
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface SavedTabStore {
-  isSelected: boolean
-  toggle: () => void
+  isSelected: boolean;
+  toggle: () => void;
 }
 
 export const useSavedTab = create<SavedTabStore>()(
   persist(
-    (set) => ({ isSelected: false, toggle: () => set((s) => ({ isSelected: !s.isSelected })) }),
-    { name: "saved-tab" }
-  )
-)
+    (set) => ({
+      isSelected: false,
+      toggle: () => set((s) => ({ isSelected: !s.isSelected })),
+    }),
+    { name: "saved-tab" },
+  ),
+);
 ```
 
 ### TanStack Query Hook
+
 ```typescript
 // hooks/use-get-posts.ts
-"use client"
-import { useInfiniteQuery } from "@tanstack/react-query"
-import axios from "axios"
+"use client";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const useGetPosts = ({ limit }: Props) => {
   return useInfiniteQuery({
     queryKey: ["posts-query"],
     queryFn: async ({ pageParam }) => {
-      const { data } = await axios.get(`/api/posts?page=${pageParam}&limit=${limit}`)
-      return data as PostPopulated[]
+      const { data } = await axios.get(
+        `/api/posts?page=${pageParam}&limit=${limit}`,
+      );
+      return data as PostPopulated[];
     },
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => lastPage.length > 0 ? page + 1 : null,
-  })
-}
+    getNextPageParam: (lastPage) => (lastPage.length > 0 ? page + 1 : null),
+  });
+};
 ```

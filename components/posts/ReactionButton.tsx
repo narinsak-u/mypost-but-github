@@ -7,7 +7,8 @@ import useLike from "@/hooks/use-like-post";
 import useSavePost from "@/hooks/use-save-post";
 
 import { Bookmark, Heart, MessagesSquare } from "lucide-react";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "../auth/SessionGuard";
+import Link from "next/link";
 
 type Props = {
   selected: ReactionButtonType;
@@ -56,7 +57,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
         </SignedIn>
 
         <SignedOut>
-          <SignInButton mode="modal">
+          <Link href="/sign-in">
             <div className="flex gap-2 items-center">
               <Heart size={18} />
               <div className="font-semibold text-sm flex gap-1">
@@ -68,7 +69,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
                 </div>
               </div>
             </div>
-          </SignInButton>
+          </Link>
         </SignedOut>
       </div>
 
@@ -109,12 +110,12 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
         </SignedIn>
 
         <SignedOut>
-          <SignInButton mode="modal">
+          <Link href="/sign-in">
             <div className="text-sm font-semibold flex gap-1">
               <Bookmark size={18} />
               <p>Save</p>
             </div>
-          </SignInButton>
+          </Link>
         </SignedOut>
       </div>
     </div>

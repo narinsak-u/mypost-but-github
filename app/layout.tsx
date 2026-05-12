@@ -5,9 +5,6 @@ import Providers from "@/providers";
 import Nav from "@/components/Nav";
 import { cn } from "@/lib/utils";
 
-import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -23,14 +20,10 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, "relative")}>
-        <ClerkProvider
-          appearance={{ baseTheme: dark }}
-        >
-          <Providers>
-            <Nav />
-            {children}
-          </Providers>
-        </ClerkProvider>
+        <Providers>
+          <Nav />
+          {children}
+        </Providers>
       </body>
     </html>
   );

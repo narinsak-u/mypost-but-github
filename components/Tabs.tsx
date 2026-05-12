@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 import { cn } from "@/lib/utils";
-import { useAuth } from "@clerk/nextjs";
+import { useSession } from "@/lib/auth-client";
 import useSavedTab from "@/store/use-saved-tab";
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 };
 
 const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
-  const { userId, isLoaded } = useAuth();
+  const { data: session, isPending: isLoaded } = useSession();
   const { isSelected, onCancel, onSelect } = useSavedTab();
 
   if (!isLoaded) return null;
@@ -30,7 +30,7 @@ const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
           <div
             className={cn(
               "text-sm font-semibold mr-2",
-              isSelected && "text-gray-500"
+              isSelected && "text-gray-500",
             )}
           >
             {firstTab}
@@ -45,7 +45,7 @@ const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
             </Badge>
           )}
         </div>
-        {secondTab && owner === userId && (
+        {secondTab && owner === session?.user?.id && (
           <div>
             <div
               className="flex items-center justify-center cursor-pointer"
@@ -54,7 +54,7 @@ const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
               <div
                 className={cn(
                   "text-sm font-semibold mr-2",
-                  !isSelected && "text-gray-500"
+                  !isSelected && "text-gray-500",
                 )}
               >
                 {secondTab}

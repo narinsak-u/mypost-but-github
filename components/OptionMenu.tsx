@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import useOptionModal from "@/store/use-option-modal";
-import { useAuth } from "@clerk/nextjs";
+import { useSession } from "@/lib/auth-client";
 import { Post } from "@prisma/client";
 import { toast } from "sonner";
 import useDeletePost from "@/hooks/use-delete-post";
@@ -26,7 +26,7 @@ type Props = {
 
 const OptionMenu = ({ post, isPost }: Props) => {
   const optionModal = useOptionModal();
-  const { userId, isLoaded } = useAuth();
+  const { data: session, isPending: isLoaded } = useSession();
   const router = useRouter();
 
   const { deletePost, isPending } = useDeletePost();
@@ -68,7 +68,7 @@ const OptionMenu = ({ post, isPost }: Props) => {
         <DropdownMenuLabel>Post Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {userId === post.userId && (
+          {session?.user?.id === post.userId && (
             <DropdownMenuItem onClick={onDelete}>
               Delete
               <DropdownMenuShortcut>

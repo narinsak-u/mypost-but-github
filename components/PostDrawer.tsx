@@ -12,7 +12,7 @@ import NewTag from "./new-tag";
 
 import { BlockNoteEditor } from "@blocknote/core";
 import { Tag, TagOptions } from "@/data/tags";
-import { useAuth } from "@clerk/nextjs";
+import { useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 import Toolbar from "./Toolbar";
@@ -34,7 +34,7 @@ const PostDrawer = (props: Props) => {
   const { isOpen, onClose } = usePostModal();
 
   const router = useRouter();
-  const { userId, isLoaded } = useAuth();
+  const { data: session, isPending: isLoaded } = useSession();
   const { createPost, isPending } = useCreatePost();
 
   if (!isLoaded) return null;
@@ -45,7 +45,7 @@ const PostDrawer = (props: Props) => {
   };
 
   const onCreatePost = async () => {
-    if (!userId) return;
+    if (!session?.user?.id) return;
 
     try {
       const post = await createPost({

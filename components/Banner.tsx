@@ -1,6 +1,7 @@
 "use client";
 
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "./auth/SessionGuard";
+import Link from "next/link";
 import { BookOpenText } from "lucide-react";
 
 import usePostModal from "@/store/use-post-modal";
@@ -31,11 +32,11 @@ const Banner = ({ isProfile }: Props) => {
             </button>
           </SignedIn>
           <SignedOut>
-            <SignInButton mode="modal">
+            <Link href="/sign-in">
               <button className="w-[125px] h-[32px] rounded-sm gap-5 bg-[#006EED] hover:bg-sky-700">
                 Create a post
               </button>
-            </SignInButton>
+            </Link>
           </SignedOut>
         </>
       )}

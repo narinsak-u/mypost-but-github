@@ -1,5 +1,5 @@
 import getPopularPosts from "@/actions/get-popular-posts";
-import { clerkClient } from '@clerk/nextjs/server';
+import { db } from "@/lib/prismadb";
 import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";
 import RightContent from "@/components/contents/RightContent";
@@ -8,21 +8,21 @@ import Feed from "@/components/Feed";
 import getPosts from "@/actions/get-posts";
 import Tabs from "@/components/Tabs";
 
+import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
+
 type Props = {};
 
 const page = async (props: Props) => {
-  const client = await clerkClient();
-  const users = await client.users.getUserList();
+  const users = await db.user.findMany();
   const popularPosts = await getPopularPosts();
   const posts = await getPosts();
 
   return (
     <>
       <div className="col-span-1 hidden sm:block xl:ms-8">
-        <LeftContent
-          users={JSON.parse(JSON.stringify(users.data))}
-          posts={posts}
-        />
+        <LeftContent users={JSON.parse(JSON.stringify(users))} posts={posts} />
       </div>
       <div className="col-span-3 sm:col-span-2">
         <MainContent>

@@ -7,7 +7,7 @@ import axios, { AxiosError } from "axios";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PostPopulated } from "@/types";
-import { useUser } from "@clerk/nextjs";
+import { useSession } from "@/lib/auth-client";
 
 type Props = {
   post: PostPopulated;
@@ -15,7 +15,7 @@ type Props = {
 
 const useSavePost = ({ post }: Props) => {
   const router = useRouter();
-  const { user, isLoaded } = useUser();
+  const { data: session, isPending: isLoaded } = useSession();
 
   // Get access to query client instance
   const queryClient = useQueryClient();
@@ -51,7 +51,7 @@ const useSavePost = ({ post }: Props) => {
     onError: (err, newData, context) => {
       queryClient.setQueryData(
         ["posts-query", context?.newData.id],
-        context?.previousData
+        context?.previousData,
       );
     },
 
@@ -61,7 +61,7 @@ const useSavePost = ({ post }: Props) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey.every((key) =>
-            ["posts-query", "saved-posts", "saved-count"].includes(String(key))
+            ["posts-query", "saved-posts", "saved-count"].includes(String(key)),
           ),
       });
     },
@@ -95,7 +95,7 @@ const useSavePost = ({ post }: Props) => {
     onError: (err, newData, context) => {
       queryClient.setQueryData(
         ["posts-query", context?.newData.id],
-        context?.previousData
+        context?.previousData,
       );
     },
 
@@ -105,7 +105,7 @@ const useSavePost = ({ post }: Props) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey.every((key) =>
-            ["posts-query", "saved-posts", "saved-count"].includes(String(key))
+            ["posts-query", "saved-posts", "saved-count"].includes(String(key)),
           ),
       });
     },
@@ -114,7 +114,7 @@ const useSavePost = ({ post }: Props) => {
   const hasSaved = () => {
     const list = post?.saveIds || [];
 
-    return list.includes(user?.id!);
+    return list.includes(session?.user?.id!);
   };
 
   const toggleSave = useCallback(async () => {
@@ -138,7 +138,7 @@ const useSavePost = ({ post }: Props) => {
 
       console.log("Something went wrong");
     }
-  }, [user, hasSaved, post.id]);
+  }, [session, hasSaved, post.id]);
 
   return {
     hasSaved,

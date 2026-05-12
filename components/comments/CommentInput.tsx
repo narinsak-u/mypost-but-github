@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import useCreateComment from "@/hooks/use-create-commnet";
 
-import { useUser } from "@clerk/nextjs";
+import { useSession } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 
@@ -17,7 +17,7 @@ const CommentInput = ({ post }: Props) => {
   const [commentBody, setCommentBody] = useState<string>("");
 
   const { createComment, isPending } = useCreateComment(post);
-  const { user, isLoaded } = useUser();
+  const { data: session, isPending: isLoaded } = useSession();
 
   if (!isLoaded) return null;
 
@@ -29,26 +29,24 @@ const CommentInput = ({ post }: Props) => {
         setCommentBody("");
       }
     },
-    [createComment, setCommentBody, commentBody]
+    [createComment, setCommentBody, commentBody],
   );
 
-  const disabledInput = isPending || !user?.id;
+  const disabledInput = isPending || !session?.user?.id;
 
   return (
     <div className="flex items-center justify-start my-3 mx-6 ">
       <div>
         <Avatar className="w-6.25 h-6.25">
           <AvatarImage
-            src={`${user?.imageUrl}` || "https://github.com/shadcn.png"}
+            src={`${session?.user?.image}` || "https://github.com/shadcn.png"}
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </div>
       <Input
         aria-label="text"
-        placeholder={
-          user?.id === undefined ? `Sign in to comment` : "Type here..."
-        }
+        placeholder={!session?.user?.id ? `Sign in to comment` : "Type here..."}
         type="text"
         value={commentBody}
         onChange={(e) => setCommentBody(e.target.value)}

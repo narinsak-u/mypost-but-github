@@ -3,7 +3,8 @@
 import { db as prisma } from "@/lib/prismadb";
 import { z } from "zod";
 import { Post } from "@prisma/client";
-import { auth } from "@clerk/nextjs/server";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 import { PostValidator } from "@/types";
 import { revalidatePath, revalidateTag } from "next/cache";
@@ -22,13 +23,11 @@ export const createPost = async (postData: {
   tag: string;
   body: string;
 }) => {
-  const { userId } = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return new Response("Unauthorized", { status: 401 });
+  const userId = session.user.id;
 
   try {
-    if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
-    }
-
     const { title, tag, body } = PostValidator.parse(postData);
 
     const post = await prisma.post.create({
@@ -57,13 +56,11 @@ export const createPost = async (postData: {
 
 // like post
 export const like = async (postId: string) => {
-  const { userId } = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return new Response("Unauthorized", { status: 401 });
+  const userId = session.user.id;
 
   try {
-    if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
-    }
-
     if (!postId || typeof postId !== "string") {
       return new Response("Invalid ID", { status: 400 });
     }
@@ -96,13 +93,11 @@ export const like = async (postId: string) => {
 
 // unlike
 export const unlike = async (postId: string) => {
-  const { userId } = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return new Response("Unauthorized", { status: 401 });
+  const userId = session.user.id;
 
   try {
-    if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
-    }
-
     if (!postId || typeof postId !== "string") {
       return new Response("Invalid ID", { status: 400 });
     }
@@ -135,13 +130,11 @@ export const unlike = async (postId: string) => {
 
 // Save post
 export const save = async (postId: string) => {
-  const { userId } = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return new Response("Unauthorized", { status: 401 });
+  const userId = session.user.id;
 
   try {
-    if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
-    }
-
     if (!postId || typeof postId !== "string") {
       return new Response("Invalid ID", { status: 400 });
     }
@@ -176,13 +169,11 @@ export const save = async (postId: string) => {
 
 // unsave
 export const unsave = async (postId: string) => {
-  const { userId } = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return new Response("Unauthorized", { status: 401 });
+  const userId = session.user.id;
 
   try {
-    if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
-    }
-
     if (!postId || typeof postId !== "string") {
       return new Response("Invalid ID", { status: 400 });
     }

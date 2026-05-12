@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PostPopulated } from "../types";
-import { useUser } from "@clerk/nextjs";
+import { useSession } from "@/lib/auth-client";
 
 type Props = {
   post: PostPopulated;
@@ -16,7 +16,7 @@ type Props = {
 
 const useLike = ({ post }: Props) => {
   const router = useRouter();
-  const { user, isLoaded } = useUser();
+  const { data: session, isPending: isLoaded } = useSession();
 
   // Get access to query client instance
   const queryClient = useQueryClient();
@@ -52,7 +52,7 @@ const useLike = ({ post }: Props) => {
     onError: (err, newData, context) => {
       queryClient.setQueryData(
         ["posts-query", context?.newData.id],
-        context?.previousData
+        context?.previousData,
       );
     },
 
@@ -62,7 +62,7 @@ const useLike = ({ post }: Props) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey.every((key) =>
-            ["posts-query", "saved-posts"].includes(String(key))
+            ["posts-query", "saved-posts"].includes(String(key)),
           ),
       });
     },
@@ -96,7 +96,7 @@ const useLike = ({ post }: Props) => {
     onError: (err, newData, context) => {
       queryClient.setQueryData(
         ["posts-query", context?.newData.id],
-        context?.previousData
+        context?.previousData,
       );
     },
 
@@ -106,7 +106,7 @@ const useLike = ({ post }: Props) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey.every((key) =>
-            ["posts-query", "saved-posts"].includes(String(key))
+            ["posts-query", "saved-posts"].includes(String(key)),
           ),
       });
     },
@@ -114,8 +114,8 @@ const useLike = ({ post }: Props) => {
 
   const hasLiked = () => {
     const list = post?.likedIds || [];
-    return list.includes(user?.id!);
-  }
+    return list.includes(session?.user?.id!);
+  };
 
   const toggleLike = useCallback(async () => {
     try {
@@ -138,7 +138,7 @@ const useLike = ({ post }: Props) => {
 
       console.log("Something went wrong");
     }
-  }, [user, hasLiked, post.id]);
+  }, [session, hasLiked, post.id]);
 
   return {
     hasLiked,

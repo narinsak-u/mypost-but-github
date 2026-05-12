@@ -1,9 +1,7 @@
-import { clerkClient } from "@clerk/nextjs/server";
+import { db } from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  const client = await clerkClient();
-  const users = await client.users.getUserList();
-
+  const users = await db.user.findMany();
   return NextResponse.json(users);
 }

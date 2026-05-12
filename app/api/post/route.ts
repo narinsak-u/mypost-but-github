@@ -1,18 +1,17 @@
 import { db as prisma } from "@/lib/prismadb";
 import { PostValidator } from "@/types";
-import { auth } from "@clerk/nextjs/server";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function POST(request: Request) {
-  const { userId } = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return new NextResponse("Unauthorized", { status: 401 });
+  const userId = session.user.id;
 
   try {
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
     const reqBody = await request.json();
 
     const { title, tag, body } = PostValidator.parse(reqBody);

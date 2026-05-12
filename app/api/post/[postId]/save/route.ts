@@ -1,17 +1,16 @@
 import { db as prisma } from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs/server";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 // save
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ postId: string }> }
+  { params }: { params: Promise<{ postId: string }> },
 ) {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return new NextResponse("Unauthorized", { status: 401 });
+  const userId = session.user.id;
 
   const { postId } = await params;
 
@@ -52,13 +51,11 @@ export async function POST(
 // unsave
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ postId: string }> }
+  { params }: { params: Promise<{ postId: string }> },
 ) {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return new NextResponse("Unauthorized", { status: 401 });
+  const userId = session.user.id;
 
   const { postId } = await params;
 

@@ -1,15 +1,15 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-
 import { cn } from "@/lib/utils";
 import { useSession } from "@/lib/auth-client";
 import useSavedTab from "@/store/use-saved-tab";
+import { Compass, SquareKanban, Star, Users } from "lucide-react";
+import { FIRST_TAB, SECOND_TAB } from "@/types";
+import { useEffect } from "react";
 
 type Props = {
-  firstTab: string;
-  secondTab?: string;
+  firstTab: FIRST_TAB;
+  secondTab?: SECOND_TAB;
   isProfile?: boolean;
   owner?: string;
 };
@@ -71,7 +71,6 @@ const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
           </div>
         )}
       </div>
-      <Separator className="bg-[#444C56]" />
     </div>
   );
 };

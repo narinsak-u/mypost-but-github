@@ -1,26 +1,12 @@
 import { db as prisma } from "@/lib/prismadb";
-import { revalidatePath, revalidateTag } from "next/cache";
-import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-const schema = z.object({
-  limit: z.string(),
-  page: z.string(),
-});
-
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-
-  // console.log("url", url);
+export async function GET(request: NextRequest) {
+  const url = request.nextUrl;
 
   try {
-    // const { limit, page } = schema.parse({
-    //   limit: url.searchParams.get("limit"),
-    //   page: url.searchParams.get("page"),
-    // });
-
-    // let whereClause = {};
-
     const limit = url.searchParams.get("limit");
     const page = url.searchParams.get("page");
 
@@ -65,7 +51,6 @@ export async function GET(request: Request) {
       });
     }
 
-    // revalidateTag("posts");
     revalidatePath("/");
 
     return NextResponse.json(posts);

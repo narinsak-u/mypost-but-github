@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "./ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import usePostModal from "@/store/use-post-modal";
 import NewTag from "./new-tag";
 
-import { BlockNoteEditor } from "@blocknote/core";
 import { Tag, TagOptions } from "@/data/tags";
 import { useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -18,12 +17,18 @@ import { toast } from "sonner";
 import Toolbar from "./Toolbar";
 import { RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
-import useCreatePost from "@/hooks/use-create-post";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { createPost } from "@/actions/post-actions";
+import { useValidateQuery } from "@/hooks/use-revalidate-query";
+import { BlockNoteEditor } from "@blocknote/core";
+import { useGetUserList } from "@/hooks/use-get-user-list";
 
 /* ✅ MOVE THIS HERE */
 const Editor = dynamic(() => import("@/components/editor/Editor"), {
   ssr: false,
 });
+
+const content = `<p class="bn-inline-content">Hello, <strong>world!</strong></p><p class="bn-inline-content"></p>`;
 
 type Props = {};
 
@@ -32,6 +37,7 @@ const PostDrawer = (props: Props) => {
   const [title, setTitle] = useState<string>("Untitled");
   const [selectedTag, setSelectedtag] = useState<Tag | null>(null);
   const { isOpen, onClose } = usePostModal();
+  const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
   const { data: session, isPending: isLoaded } = useSession();
@@ -54,12 +60,15 @@ const PostDrawer = (props: Props) => {
         tag: selectedTag?.value ?? TagOptions[0]!.value,
       });
 
-      if (post) {
+      if (post && typeof post === "object" && "id" in post) {
         toast.success("Post has been created 🎉", { duration: 1500 });
 
         setHTML("");
         setTitle("Untitled");
         setSelectedtag(null);
+
+        //  validate post queries
+        await validatePostQueries({ ...post, comments: [] });
         router.refresh();
       }
     } catch (error: any) {
@@ -69,20 +78,33 @@ const PostDrawer = (props: Props) => {
     }
   };
 
+  const onChange = async (editor: BlockNoteEditor) => {
+    const html = await editor.blocksToHTMLLossy(editor.document);
+    setHTML(html);
+  };
+
+  if (!isLoaded) return null;
+
   return (
     <Drawer open={isOpen} onClose={onClose}>
       <DrawerContent className="bg-[#1F1F1F] border-none">
+        <VisuallyHidden>
+          <DrawerHeader>
+            <DrawerTitle>Move Goal</DrawerTitle>
+            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+          </DrawerHeader>
+        </VisuallyHidden>
         <div className="mx-auto w-full h-full flex flex-col">
-          <ScrollArea className="h-150">
+          <ScrollArea className="h-200">
             <div className="mx-8 my-4 flex justify-end gap-3">
-              <Button size="sm" variant="outline" onClick={onClose}>
+              <Button className="cursor-pointer" size="sm" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
               <Button
                 size="sm"
-                className="bg-blue-700 hover:bg-blue-900"
+                className="bg-blue-700 cursor-pointer hover:bg-blue-900"
                 disabled={isPending}
-                onClick={onCreatePost}
+                onClick={() => startTransition(onCreatePost)}
               >
                 {isPending ? (
                   <>
@@ -101,7 +123,12 @@ const PostDrawer = (props: Props) => {
                 selectedTag={selectedTag}
                 setSelectedtag={setSelectedtag}
               />
-              <Editor />
+              <Editor
+                onChange={onChange}
+                initialContent={content}
+                editable
+                users={usernames}
+              />
             </div>
           </ScrollArea>
         </div>

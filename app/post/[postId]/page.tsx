@@ -8,6 +8,8 @@ import RightContent from "@/components/contents/RightContent";
 import PostItem from "@/components/posts/PostItem";
 import getPostById from "@/actions/get-post-by-id";
 import { PostPopulated } from "@/types";
+import Link from "next/link";
+import { db } from "@/lib/prismadb";
 
 export const dynamic = "force-dynamic";
 

@@ -3,18 +3,13 @@
 import Skeleton from "./Skeleton";
 import PostItem from "./posts/PostItem";
 import LoadMore from "./LoadMore";
-
 import { useGetPosts } from "@/hooks/use-get-posts";
-import useSavedTab from "@/store/use-saved-tab";
 
 type Props = {
-  isProfile?: boolean;
   userId?: string;
 };
 
-const Feed = ({ isProfile, userId }: Props) => {
-  const { isSelected } = useSavedTab();
-
+const Feed = ({ userId }: Props) => {
   const { posts, hasNextPage, isFetchingNextPage, loadNextPost, isFetching } =
     useGetPosts({
       limit: 3,
@@ -23,9 +18,9 @@ const Feed = ({ isProfile, userId }: Props) => {
 
   return (
     <div>
-      {!isSelected && !posts.length && <Skeleton />}
+      {isFetching && !posts.length && <Skeleton />}
       {posts.map((post) => (
-        <PostItem key={post.id} post={post} isProfile={isProfile} />
+        <PostItem key={post.id} post={post} />
       ))}
 
       <LoadMore

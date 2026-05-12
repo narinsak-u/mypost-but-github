@@ -5,7 +5,7 @@ import { z } from "zod";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ userId: string }> }
+  { params }: { params: Promise<{ userId: string }> },
 ) {
   const url = new URL(request.url);
   const { userId } = await params;

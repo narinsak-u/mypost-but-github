@@ -1,8 +1,6 @@
 "use client";
 
 import CommentItem from "./CommentItem";
-import { Post } from "@prisma/client";
-
 import { PostPopulated } from "@/types";
 import CommentInput from "./CommentInput";
 
@@ -11,18 +9,15 @@ type Props = {
 };
 
 const CommentSection = ({ post }: Props) => {
-  return (
-    <>
-      <div>
-        {post &&
-          post.comments &&
-          post.comments.map((comment) => (
-            <CommentItem key={comment.id} comment={comment} />
-          ))}
-      </div>
+  const comments = post?.comments ?? [];
 
+  return (
+    <div>
+      {comments.map((comment) => (
+        <CommentItem key={comment.id} comment={comment} post={post} />
+      ))}
       <CommentInput post={post} />
-    </>
+    </div>
   );
 };
 

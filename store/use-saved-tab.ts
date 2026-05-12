@@ -1,15 +1,16 @@
 import { create } from "zustand";
+import { FIRST_TAB, SECOND_TAB } from "@/types";
 
-interface SaveState {
-  isSelected: boolean;
-  onSelect: () => void;
-  onCancel: () => void;
+type Tabs = FIRST_TAB | SECOND_TAB;
+
+interface TabState {
+  tab: Tabs;
+  setTab: (tab: Tabs) => void;
 }
 
-const useSavedTab = create<SaveState>((set) => ({
-  isSelected: false,
-  onSelect: () => set({ isSelected: true }),
-  onCancel: () => set({ isSelected: false }),
+const useSavedTab = create<TabState>((set) => ({
+  tab: "For You",
+  setTab: (tab) => set({ tab }),
 }));
 
 export default useSavedTab;

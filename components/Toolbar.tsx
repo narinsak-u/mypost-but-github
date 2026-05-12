@@ -37,7 +37,7 @@ const Toolbar = ({ title, preview, setTitle }: Props) => {
   };
 
   return (
-    <div className="pl-[54px] group relative">
+    <div className="pl-13.5 group relative">
       {isEditing && !preview ? (
         <TextareaAutosize
           ref={inputRef}
@@ -46,12 +46,12 @@ const Toolbar = ({ title, preview, setTitle }: Props) => {
           value={title}
           placeholder="Enter your title..."
           onChange={(e) => onInput(e.target.value)}
-          className="text-5xl  bg-transparent font-bold break-words outline-none text-[#CFCFCF] resize-none"
+          className="sm:text-5xl text-3xl bg-transparent font-bold wrap-break-word outline-none text-[#CFCFCF] resize-none"
         />
       ) : (
         <div
           onClick={enableInput}
-          className="pb-[11.5px] text-5xl font-bold break-words outline-none text-[#CFCFCF]"
+          className="pb-[11.5px] sm:text-5xl text-3xl font-bold wrap-break-word outline-none text-[#CFCFCF]"
         >
           {title}
         </div>

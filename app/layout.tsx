@@ -2,21 +2,28 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import Providers from "@/providers";
-import Nav from "@/components/Nav";
+import Nav from "@/components/nav/Nav";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "mypost but github",
-  description: "A mini social media inspired by Github + Twitter",
+export const metadata: Metadata = {
+  title: {
+    default: siteMetadata.title,
+    template: `%s | ${siteMetadata.title}`,
+  },
 };
 
 type Props = {
   children: React.ReactNode;
 };
 
-export default function RootLayout({ children }: Props) {
+async function getCurrentYear() {
+  'use cache'
+  return new Date().getFullYear()
+}
+
+export default async function RootLayout({ children }: Props) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, "relative")} suppressHydrationWarning>

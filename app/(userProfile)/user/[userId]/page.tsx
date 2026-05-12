@@ -3,7 +3,6 @@ import { db } from "@/lib/prismadb";
 import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";
 import Feed from "@/components/Feed";
-import Banner from "@/components/Banner";
 import Tabs from "@/components/Tabs";
 import type { Metadata } from "next";
 
@@ -23,11 +22,14 @@ const UserProfile = async ({ params }: Props) => {
 
   return (
     <>
-      <div className="col-span-1 hidden sm:block xl:ms-8">
-        <LeftContent
-          posts={posts}
-          isProfile
-          user={JSON.parse(JSON.stringify(user))}
+      <MainContentWrapper>
+        <ProfileBanner
+          isOwner={isOwner}
+          user={profileUser}
+          starCount={stars.starCount}
+          followersCount={followersCount}
+          followingCount={followingCount}
+          isFollowing={isFollowing}
         />
       </div>
       <div className="col-span-3 sm:col-span-2 lg:pl-10 lg:col-span-3 max-w-4xl">
@@ -41,4 +43,10 @@ const UserProfile = async ({ params }: Props) => {
   );
 };
 
-export default UserProfile;
+export default function UserProfile(props: Props) {
+  return (
+    <Suspense fallback={<Skeleton />}>
+      <UserProfileContent params={props.params} />
+    </Suspense>
+  );
+}

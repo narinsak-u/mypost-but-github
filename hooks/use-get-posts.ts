@@ -13,19 +13,30 @@ type Props = {
 };
 
 export const useGetPosts = ({ limit, userId }: Props) => {
-  const { isSelected } = useSavedTab();
+  const { tab } = useSavedTab();
+  const normalizedTab = tab.trim().toLowerCase();
+  const resolvedLimit = limit ?? 10;
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, isFetching } =
     useInfiniteQuery({
       queryKey: postKeys.feed({ isSelected, userId, limit }),
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
-        const query =
-          userId && isSelected
-            ? `/api/posts/${userId}/saves?limit=${limit}&page=${pageParam}`
-            : userId
-              ? `/api/posts/${userId}?limit=${limit}&page=${pageParam}`
-              : `/api/posts?limit=${limit}&page=${pageParam}`;
+        let query: string;
+
+        switch (normalizedTab) {
+          case "following":
+            query = `/api/posts/following?limit=${resolvedLimit}&page=${pageParam}`;
+            break;
+          case "starred":
+            query = `/api/posts/starred?limit=${resolvedLimit}&page=${pageParam}`;
+            break;
+          default:
+            query = userId
+              ? `/api/posts/${userId}?limit=${resolvedLimit}&page=${pageParam}`
+              : `/api/posts?limit=${resolvedLimit}&page=${pageParam}`;
+            break;
+        }
 
         const { data } = await axios.get(query);
         return data as PostPopulated[];

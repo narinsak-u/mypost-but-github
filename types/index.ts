@@ -1,4 +1,4 @@
-import { Post, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 // post response
@@ -42,7 +42,7 @@ export const PostValidator = z.object({
 });
 
 export const CommentValidator = z.object({
-  // postId: z.string(),
+  postId: z.string(),
   body: z.string(),
 });
 
@@ -53,3 +53,17 @@ export const CommentValidator = z.object({
 
 export type FormData = z.infer<typeof PostValidator>;
 export type CommentInput = z.infer<typeof CommentValidator>;
+
+
+export type UserProfileUser = {
+  imageUrl: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  username: string | null;
+  email: string | null;
+  createdAt: number;
+  id: string;
+}
+
+export type FIRST_TAB = "For You" | "Overview";
+export type SECOND_TAB = "Following" | "Starred";

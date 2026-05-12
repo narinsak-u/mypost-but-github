@@ -7,9 +7,7 @@ type Props = {
 const PostContentLayout = ({ children }: Props) => {
   return (
     <div className="h-full w-full flex flex-col text-white">
-      <div className="h-full w-full grid grid-cols-3 lg:grid-cols-4 mx-auto">
-        {children}
-      </div>
+      {children}
     </div>
   );
 };

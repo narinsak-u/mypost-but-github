@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, EllipsisVertical, Trash2 } from "lucide-react";
+import { Copy, MoreHorizontal, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,25 +16,25 @@ import useOptionModal from "@/store/use-option-modal";
 import { useSession } from "@/lib/auth-client";
 import { Post } from "@prisma/client";
 import { toast } from "sonner";
-import useDeletePost from "@/hooks/use-delete-post";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { deletePost } from "@/actions/post-actions";
+import { deleteComment } from "@/actions/comment-actions";
+import { useValidateQuery } from "@/hooks/use-revalidate-query";
 
 type Props = {
   post: Post;
-  isPost?: boolean;
+  comment?: Comment;
+  isComment?: boolean;
 };
 
-const OptionMenu = ({ post, isPost }: Props) => {
+const OptionMenu = ({ post, comment, isComment }: Props) => {
   const optionModal = useOptionModal();
   const { data: session, isPending: isLoaded } = useSession();
   const router = useRouter();
 
-  const { deletePost, isPending } = useDeletePost();
-
-  if (!isLoaded) return null;
-
   const onCopy = () => {
-    const text = isPost
+    const text = !isComment
       ? `${window.location.href}`
       : `${window.location.href}post/${post.id}`;
 
@@ -44,28 +44,46 @@ const OptionMenu = ({ post, isPost }: Props) => {
     });
   };
 
-  const onDelete = async () => {
-    toast.promise(async () => await deletePost(post.id), {
+  const handleAction = async () => {
+    if (isPending) return;
+
+    const promise = !isComment ? deletePost(post.id) : deleteComment(comment!.id!);
+
+    toast.promise(promise.then((res: boolean | { error: string }) => {
+      if (typeof res === 'object' && 'error' in res) throw new Error(res.error);
+      return res === true;
+    }), {
       loading: "Deleting...",
       success: () => {
-        router.refresh();
-        return `Post deleted ‼️`;
+        return `${!isComment ? "Post" : "Comment"} deleted ‼️`;
       },
       error: "Error",
     });
+
+    try {
+      await promise;
+
+      //  validate post queries
+      await validatePostQueries({ ...post, comments: [] });
+      router.refresh();
+    } catch (error: any) {
+      toast.error(`${error.message} ‼️`, { duration: 1500 });
+    }
   };
+
+  if (!isLoaded) return null;
 
   return (
     <DropdownMenu onOpenChange={optionModal.onClose}>
       <DropdownMenuTrigger asChild>
-        <EllipsisVertical
+        <MoreHorizontal
           className="cursor-pointer z-10"
           size={15}
           onClick={() => optionModal.onOpen()}
         />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-fit">
-        <DropdownMenuLabel>Post Actions</DropdownMenuLabel>
+      <DropdownMenuContent className="w-fit" align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {session?.user?.id === post.userId && (
@@ -76,12 +94,14 @@ const OptionMenu = ({ post, isPost }: Props) => {
               </DropdownMenuShortcut>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem onClick={onCopy}>
-            Share
-            <DropdownMenuShortcut>
-              <Copy size={15} />
-            </DropdownMenuShortcut>
-          </DropdownMenuItem>
+          {!isComment && (
+            <DropdownMenuItem onClick={onCopy}>
+              Share
+              <DropdownMenuShortcut>
+                <Copy size={15} />
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

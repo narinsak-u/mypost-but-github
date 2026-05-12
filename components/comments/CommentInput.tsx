@@ -6,14 +6,12 @@ import useCreateComment from "@/hooks/use-create-commnet";
 import { useSession } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { createComment } from "@/actions/comment-actions";
+import { useValidateQuery } from "@/hooks/use-revalidate-query";
+import { useRouter } from "next/navigation";
+import { PostPopulated } from "@/types";
 
-import { Post } from "@prisma/client";
-
-type Props = {
-  post: Post;
-};
-
-const CommentInput = ({ post }: Props) => {
+const CommentInput = ({ post }: { post: PostPopulated }) => {
   const [commentBody, setCommentBody] = useState<string>("");
 
   const { createComment, isPending } = useCreateComment(post);
@@ -50,8 +48,12 @@ const CommentInput = ({ post }: Props) => {
         type="text"
         value={commentBody}
         onChange={(e) => setCommentBody(e.target.value)}
-        onKeyUp={(e) => {
-          onCreateComment(e);
+        onKeyDown={(e) => {
+          if (e.key !== "Enter") return;
+          e.preventDefault();
+          startTransition(() => {
+            onCreateComment();
+          });
         }}
         disabled={disabledInput}
         className="bg-transparent h-9 w-full rounded-sm ml-4 border border-[#444C56] focus:border-0"

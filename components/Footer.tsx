@@ -27,12 +27,12 @@ const Footer = () => {
           </a>
           +
           <a
-            href="https://clerk.com"
+            href="https://better-auth.com"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-[#C9D1D9] hover:underline underline-offset-4"
           >
-            Clerk
+            Better Auth
           </a>
         </div>
       </div>

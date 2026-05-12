@@ -56,9 +56,8 @@ export type CommentInput = z.infer<typeof CommentValidator>;
 
 
 export type UserProfileUser = {
-  imageUrl: string | null;
-  firstName: string | null;
-  lastName: string | null;
+  image: string | null;
+  name: string | null;
   username: string | null;
   email: string | null;
   createdAt: number;

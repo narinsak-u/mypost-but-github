@@ -42,12 +42,12 @@ export const ProfileBanner = ({
     };
 
     const displayName =
-        `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim() ||
+        user?.name ||
         user?.username ||
         "User";
 
     const initials =
-        `${user?.firstName?.[0] ?? ""}${user?.lastName?.[0] ?? ""}`.trim() ||
+        user?.name?.[0]?.toUpperCase() ||
         (user?.username?.[0] ? user.username[0].toUpperCase() : "U");
 
     const joined = new Date(user.createdAt).toLocaleDateString(undefined, {
@@ -61,7 +61,7 @@ export const ProfileBanner = ({
                 <div className="flex items-center gap-5 w-full flex-col sm:flex-row">
                     {/* avatar */}
                     <Avatar className="h-32 w-32 border-4 border-[#0D1117] shadow-sm">
-                        <AvatarImage src={user?.imageUrl || "https://github.com/shadcn.png"} />
+                        <AvatarImage src={user?.image || "https://github.com/shadcn.png"} />
                         <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
 
@@ -69,7 +69,7 @@ export const ProfileBanner = ({
                     <div className="flex items-center justify-center sm:justify-between sm:pr-8 gap-4 flex-col sm:flex-row pb-4 w-full">
                         <div className="flex flex-col">
                             <div className="truncate text-3xl font-bold text-white">{displayName}</div>
-                            <div className="truncate text-sm text-[#8B949E]">{`@${user?.firstName ?? ""}${user?.lastName ?? ""}`.trim()}</div>
+                            <div className="truncate text-sm text-[#8B949E]">{`@${user?.username ?? ""}`}</div>
                             <div className="mt-4 text-sm">
                                 <p className="text-[#8B949E]">No bio yet.</p>
                             </div>

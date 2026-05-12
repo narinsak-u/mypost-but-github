@@ -14,7 +14,7 @@ export const useGetUserList = () => {
   });
 
   const usernames =
-    (data && data.map((user) => `${user.firstName} ${user.lastName}`)) ?? [];
+    (data && data.map((user) => user.name)) ?? [];
 
   return { data, isFetching, usernames };
 };

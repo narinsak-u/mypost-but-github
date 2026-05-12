@@ -10,10 +10,9 @@ import Link from "next/link";
 
 type ClerkUser = {
     id: string;
-    firstName?: string | null;
-    lastName?: string | null;
+    name?: string | null;
     username?: string | null;
-    imageUrl?: string | null;
+    image?: string | null;
     isFollowing?: boolean;
 };
 
@@ -31,9 +30,9 @@ const WhoToFollow = () => {
         .map((u) => {
             return {
                 id: u.id,
-                name: `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim() || u.username || "User",
-                handle: `@${u?.firstName ?? ""}${u?.lastName ?? ""}`.trim(),
-                imageUrl: u.imageUrl || "",
+                name: u.name || u.username || "User",
+                handle: `@${u?.username ?? ""}`.trim(),
+                image: u.image || "",
                 isFollowing: Boolean(u.isFollowing),
             };
         });
@@ -78,7 +77,7 @@ const WhoToFollow = () => {
                             <Link href={`/user/${suggestion.id}`} className="flex min-w-0 items-center gap-3">
                                 <img
                                     className="h-10 w-10 shrink-0 rounded-full"
-                                    src={suggestion.imageUrl}
+                                    src={suggestion.image}
                                     alt={suggestion.name}
                                 />
                                 <div className="min-w-0">

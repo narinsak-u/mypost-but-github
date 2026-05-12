@@ -22,7 +22,7 @@ const WhoToFollow = () => {
     // const [isPending, startTransition] = useTransition();
     // const [followById, setFollowById] = useState<Record<string, boolean>>({});
     const { data: users } = useGetUserList();
-    const { data: session, isLoaded } = useSession();
+    const { data: session, isPending: isLoaded } = useSession();
     const sessionUser = session?.user as { id?: string } | undefined;
 
     const suggestions = ((users ?? []) as ClerkUser[])

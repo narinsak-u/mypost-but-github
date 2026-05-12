@@ -16,7 +16,7 @@ vi.mock("axios", () => ({
 }));
 
 vi.mock("@/store/use-saved-tab", () => ({
-  default: () => ({ isSelected: false }),
+  default: () => ({ tab: "For You" }),
 }));
 
 function createWrapper() {

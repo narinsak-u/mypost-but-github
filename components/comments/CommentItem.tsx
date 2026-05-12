@@ -7,6 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 import { PostPopulated } from "@/types";
 import OptionMenu from "../OptionMenu";
 import Link from "next/link";
+import { useSession } from "@/lib/auth-client";
 
 type Props = {
   comment: Comment;
@@ -15,7 +16,8 @@ type Props = {
 
 const CommentItem = ({ comment, post }: Props) => {
   const { data: user, isFetching } = useGetUser({ userId: comment.userId });
-  const { data: currentUser } = useGetUser();
+  const { data: session } = useSession();
+  const currentUserId = session?.user?.id;
 
   if (isFetching) return null;
 
@@ -39,7 +41,7 @@ const CommentItem = ({ comment, post }: Props) => {
               </Link>
               <span className="text-[#8B949E]">· {formatDistanceToNow(new Date(comment.createdAt))} ago</span>
             </div>
-            {currentUser?.id === comment.userId && (
+            {currentUserId === comment.userId && (
               <div>
                 <OptionMenu post={post} comment={comment} isComment />
               </div>

@@ -1,50 +1,43 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import useSavedTab from "../use-saved-tab";
 
 describe("useSavedTab", () => {
-  beforeEach(() => {
-    useSavedTab.setState({ isSelected: false });
-  });
-
-  it("initializes with isSelected false", () => {
+  it("initializes with tab 'For You'", () => {
     const { result } = renderHook(() => useSavedTab());
-    expect(result.current.isSelected).toBe(false);
+    expect(result.current.tab).toBe("For You");
   });
 
-  it("sets isSelected to true on onSelect", () => {
+  it("sets tab to 'Following' via setTab", () => {
     const { result } = renderHook(() => useSavedTab());
 
     act(() => {
-      result.current.onSelect();
+      result.current.setTab("Following");
     });
 
-    expect(result.current.isSelected).toBe(true);
+    expect(result.current.tab).toBe("Following");
   });
 
-  it("sets isSelected back to false on onCancel", () => {
+  it("sets tab to 'Starred' via setTab", () => {
     const { result } = renderHook(() => useSavedTab());
 
     act(() => {
-      result.current.onSelect();
-    });
-    act(() => {
-      result.current.onCancel();
+      result.current.setTab("Starred");
     });
 
-    expect(result.current.isSelected).toBe(false);
+    expect(result.current.tab).toBe("Starred");
   });
 
-  it("toggles correctly in sequence", () => {
+  it("changes tab correctly in sequence", () => {
     const { result } = renderHook(() => useSavedTab());
 
-    act(() => result.current.onSelect());
-    expect(result.current.isSelected).toBe(true);
+    act(() => result.current.setTab("Following"));
+    expect(result.current.tab).toBe("Following");
 
-    act(() => result.current.onCancel());
-    expect(result.current.isSelected).toBe(false);
+    act(() => result.current.setTab("Starred"));
+    expect(result.current.tab).toBe("Starred");
 
-    act(() => result.current.onSelect());
-    expect(result.current.isSelected).toBe(true);
+    act(() => result.current.setTab("For You"));
+    expect(result.current.tab).toBe("For You");
   });
 });

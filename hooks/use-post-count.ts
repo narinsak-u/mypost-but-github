@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Post } from "@prisma/client";
+import type { Post } from "@prisma/client";
 
 type Props = {
   posts: Post[];

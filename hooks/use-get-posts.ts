@@ -39,13 +39,16 @@ export const useGetPosts = ({ limit, userId }: Props) => {
       initialData: { pages: [], pageParams: [1] },
     });
 
-  const posts = useMemo(() => data?.pages.flatMap((page) => page) ?? [], [data?.pages]);
+  const posts = useMemo(
+    () => data?.pages.flatMap((page) => page) ?? [],
+    [data?.pages],
+  );
 
   const loadNextPost = useCallback(async () => {
     if (hasNextPage && !isFetchingNextPage) {
       await fetchNextPage();
     }
-  }, [hastNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return { posts, loadNextPost, isFetchingNextPage, hasNextPage, isFetching };
 };

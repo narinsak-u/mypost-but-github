@@ -22,6 +22,12 @@ export const auth = betterAuth({
     updateAge: 86400,
   },
   trustedOrigins: [process.env.BETTER_AUTH_URL!],
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["github", "google"], // Add provider here
+    },
+  },
 });
 
 export type { Session, User } from "better-auth";

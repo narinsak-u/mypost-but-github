@@ -19,7 +19,7 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(inter.className, "relative")}>
+      <body className={cn(inter.className, "relative")} suppressHydrationWarning>
         <Providers>
           <Nav />
           {children}

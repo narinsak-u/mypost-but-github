@@ -2,16 +2,18 @@
 
 import { db as prisma } from "@/lib/prismadb";
 import { CommentValidator } from "@/types";
-import { auth } from "@clerk/nextjs/server";
+import { getCurrentSession } from "@/lib/auth-helpers";
 import { z } from "zod";
 
 export const createComment = async (commentData: { postId: string, body: string }) => {
-    const { userId } = await auth();
+    const session = await getCurrentSession();
 
     try {
-        if (!userId) {
+        if (!session?.user?.id) {
             return { error: "Unauthorized" };
         }
+
+        const userId = session.user.id;
 
         const { postId, body } = CommentValidator.parse(commentData);
 
@@ -45,12 +47,14 @@ export const createComment = async (commentData: { postId: string, body: string 
 
 // delete comment
 export const deleteComment = async (commentId: string) => {
-    const { userId } = await auth();
+    const session = await getCurrentSession();
 
     try {
-        if (!userId) {
+        if (!session?.user?.id) {
             return { error: "Unauthorized" };
         }
+
+        const userId = session.user.id;
 
         const existingComment = await prisma.comment.findUnique({
             where: {
@@ -60,6 +64,10 @@ export const deleteComment = async (commentId: string) => {
 
         if (!existingComment) {
             return { error: "Comment not found" };
+        }
+
+        if (existingComment.userId !== userId) {
+            return { error: "Unauthorized" };
         }
 
         await prisma.comment.delete({

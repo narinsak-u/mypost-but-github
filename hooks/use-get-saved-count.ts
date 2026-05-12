@@ -21,13 +21,13 @@ const useGetSavedCount = () => {
   });
 
   const [savedCount, setSavedCount] = useState<{
-    [userId: number]: number;
+    [userId: string]: number;
   }>({});
 
   useEffect(() => {
     if (!posts?.length) return;
 
-    const counts: { [userId: number]: number } = {};
+    const counts: { [userId: string]: number } = {};
 
     posts.forEach((post) => {
       post.saveIds.forEach((saveId) => {

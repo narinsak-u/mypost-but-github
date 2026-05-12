@@ -9,13 +9,13 @@ type Props = {
 
 const usePostCount = ({ posts }: Props) => {
   const [userPostCount, setUserPostCount] = useState<{
-    [userId: number]: number;
+    [userId: string]: number;
   }>({});
 
   // Count the number of posts for each user
   useEffect(() => {
     const countPosts = () => {
-      const counts: { [userId: number]: number } = {};
+      const counts: { [userId: string]: number } = {};
 
       posts.forEach((post) => {
         counts[post.userId] = (counts[post.userId] || 0) + 1;

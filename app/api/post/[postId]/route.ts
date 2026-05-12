@@ -38,8 +38,6 @@ export async function DELETE(
     revalidatePath("/");
 
     return NextResponse.json(deletedPost);
-
-    return NextResponse.json(post);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(error.message, { status: 400 });

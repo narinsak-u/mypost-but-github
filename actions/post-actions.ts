@@ -2,7 +2,7 @@
 
 import { db as prisma } from "@/lib/prismadb";
 import { z } from "zod";
-import { auth } from "@clerk/nextjs/server";
+import { getCurrentSession } from "@/lib/auth-helpers";
 
 import { PostValidator } from "@/types";
 import { revalidatePath } from "next/cache";
@@ -15,19 +15,19 @@ import { revalidatePath } from "next/cache";
 //   };
 // };
 
-// create post
 export const createPost = async (postData: {
   title: string;
   tag: string;
   body: string;
 }) => {
-  const { userId } = await auth();
+  const session = await getCurrentSession();
 
   try {
-    if (!userId) {
-      throw new Error("Unauthorized");
+    if (!session?.user?.id) {
+      return { error: "Unauthorized" };
     }
 
+    const userId = session.user.id;
     const { title, tag, body } = PostValidator.parse(postData);
 
     const post = await prisma.post.create({
@@ -45,22 +45,23 @@ export const createPost = async (postData: {
 
     return post;
   } catch (error) {
-    if (error instanceof z.ZodError) throw new Error(error.message);
-    throw error;
+    if (error instanceof z.ZodError) return { error: error.message };
+    return { error: "Internal server error" };
   }
 };
 
-// delete post
 export const deletePost = async (postId: string) => {
-  const { userId } = await auth();
+  const session = await getCurrentSession();
 
   try {
-    if (!userId) {
-      throw new Error("Unauthorized");
+    if (!session?.user?.id) {
+      return { error: "Unauthorized" };
     }
 
+    const userId = session.user.id;
+
     if (!postId || typeof postId !== "string") {
-      throw new Error("Invalid ID");
+      return { error: "Invalid ID" };
     }
 
     const post = await prisma.post.findUnique({
@@ -69,11 +70,10 @@ export const deletePost = async (postId: string) => {
       },
     });
 
-    if (!post) throw new Error("Post not found");
+    if (!post) return { error: "Post not found" };
 
-    // check if post belongs to user
     if (post.userId !== userId) {
-      throw new Error("Unauthorized");
+      return { error: "Unauthorized" };
     }
 
     await prisma.post.delete({
@@ -86,21 +86,22 @@ export const deletePost = async (postId: string) => {
 
     return true;
   } catch (error) {
-    if (error instanceof z.ZodError) throw new Error(error.message);
-    throw error;
+    if (error instanceof z.ZodError) return { error: error.message };
+    return { error: "Internal server error" };
   }
 };
 
 export type ToggleLikeResult = { hasLiked: boolean } | { error: string };
 
-// togglelike post
 export const toggleLike = async (postId: string): Promise<ToggleLikeResult> => {
-  const { userId } = await auth();
+  const session = await getCurrentSession();
 
   try {
-    if (!userId) {
+    if (!session?.user?.id) {
       return { error: "Unauthorized" };
     }
+
+    const userId = session.user.id;
 
     if (!postId || typeof postId !== "string") {
       return { error: "Invalid ID" };
@@ -140,14 +141,15 @@ export const toggleLike = async (postId: string): Promise<ToggleLikeResult> => {
 
 export type ToggleStarResult = { hasStarred: boolean } | { error: string };
 
-// toggle star post
 export const toggleStar = async (postId: string): Promise<ToggleStarResult> => {
-  const { userId } = await auth();
+  const session = await getCurrentSession();
 
   try {
-    if (!userId) {
+    if (!session?.user?.id) {
       return { error: "Unauthorized" };
     }
+
+    const userId = session.user.id;
 
     if (!postId || typeof postId !== "string") {
       return { error: "Invalid ID" };

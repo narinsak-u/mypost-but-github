@@ -6,10 +6,10 @@ import { z } from "zod";
 
 export async function POST(
   request: Request,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   const { userId } = await auth();
-  const { postId } = params;
+  const { postId } = await params;
 
   try {
     if (!userId) {

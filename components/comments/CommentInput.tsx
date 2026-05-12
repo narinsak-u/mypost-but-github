@@ -19,8 +19,7 @@ const CommentInput = ({ post }: Props) => {
   const { createComment, isPending } = useCreateComment(post);
   const { user, isLoaded } = useUser();
 
-  // Check if user is loaded
-  if (!isLoaded) return { isLoading: true };
+  if (!isLoaded) return null;
 
   // # Handle create comment
   const onCreateComment = useCallback(

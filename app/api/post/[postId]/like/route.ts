@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 // like
 export async function POST(
   request: Request,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   const { userId } = await auth();
 
@@ -13,7 +13,7 @@ export async function POST(
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { postId } = params;
+  const { postId } = await params;
 
   if (!postId || typeof postId !== "string") {
     return new NextResponse("Invalid ID", { status: 400 });
@@ -52,7 +52,7 @@ export async function POST(
 // unlike
 export async function DELETE(
   request: Request,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   const { userId } = await auth();
 
@@ -60,7 +60,7 @@ export async function DELETE(
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { postId } = params;
+  const { postId } = await params;
 
   if (!postId || typeof postId !== "string") {
     return new NextResponse("Invalid ID", { status: 400 });

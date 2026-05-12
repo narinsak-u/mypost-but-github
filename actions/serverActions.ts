@@ -40,7 +40,7 @@ export const createPost = async (postData: {
       },
     });
 
-    // revalidateTag("posts");
+    revalidateTag("posts", "default");
     revalidatePath("/");
 
     return post;

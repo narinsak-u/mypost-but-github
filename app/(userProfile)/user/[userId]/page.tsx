@@ -8,16 +8,17 @@ import Tabs from "@/components/Tabs";
 import { clerkClient } from "@clerk/nextjs/server";
 
 type Props = {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 };
 
 const UserProfile = async ({ params }: Props) => {
+  const { userId } = await params;
   const posts = await getPosts();
 
   const client = await clerkClient();
-  const user = await client.users.getUser(params.userId);
+  const user = await client.users.getUser(userId);
 
   return (
     <>
@@ -35,9 +36,9 @@ const UserProfile = async ({ params }: Props) => {
             firstTab="Posts"
             secondTab="Saved"
             isProfile
-            owner={params.userId}
+            owner={userId}
           />
-          <Feed isProfile userId={params.userId} />
+          <Feed isProfile userId={userId} />
         </MainContent>
       </div>
     </>

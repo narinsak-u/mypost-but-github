@@ -10,17 +10,18 @@ import getPostById from "@/actions/get-post-by-id";
 import { PostPopulated } from "@/types";
 
 type Props = {
-  params: {
+  params: Promise<{
     postId: string;
-  };
+  }>;
 };
 
 const PostPage = async ({ params }: Props) => {
+  const { postId } = await params;
   const client = await clerkClient();
   const users = await client.users.getUserList();
   const popularPosts = await getPopularPosts();
   const posts = await getPosts();
-  const post = (await getPostById(params.postId)) as PostPopulated;
+  const post = (await getPostById(postId)) as PostPopulated;
 
   return (
     <>

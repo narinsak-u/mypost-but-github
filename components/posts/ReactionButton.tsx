@@ -1,11 +1,16 @@
 "use client";
 
+import { useState, useTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 import { ReactionButtonType } from "./PostItem";
 import { PostPopulated } from "@/types";
 
-import { useLike, useSavePost } from "@/hooks/use-toggle-post";
+import { toggleLike, toggleStar } from "@/actions/post-actions";
+import { useValidateQuery } from "@/hooks/use-revalidate-query";
+import { toast } from "sonner";
 
-import { Bookmark, Heart, MessagesSquare } from "lucide-react";
+import { Bookmark, Heart, MessagesSquare, Star } from "lucide-react";
 import { SignedIn, SignedOut } from "../auth/SessionGuard";
 import Link from "next/link";
 
@@ -18,7 +23,8 @@ type Props = {
 const ReactionButton = ({ selected, setSelected, post }: Props) => {
   const [hasLiked, setHasLiked] = useState<boolean>(false);
   const [hasStarred, setHasStarred] = useState<boolean>(false);
-  const { userId, isLoaded } = useAuth();
+  const { data: session, isPending: isLoaded } = useSession();
+  const userId = session?.user?.id;
   const router = useRouter();
   const { validatePostQueries } = useValidateQuery();
   const [isPending, startTransition] = useTransition();
@@ -57,10 +63,10 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
     }
 
     const updatedStarIds = res.hasStarred
-      ? Array.from(new Set([...(post.starIds ?? []), userId]))
-      : (post.starIds ?? []).filter((id) => id !== userId);
+      ? Array.from(new Set([...(post.saveIds ?? []), userId]))
+      : (post.saveIds ?? []).filter((id) => id !== userId);
 
-    const updatedPost = { ...post, starIds: updatedStarIds };
+    const updatedPost = { ...post, saveIds: updatedStarIds };
 
     setHasStarred(res.hasStarred);
     await validatePostQueries(updatedPost);
@@ -70,8 +76,8 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
   useEffect(() => {
     if (!userId) return;
     setHasLiked((post.likedIds ?? []).includes(userId));
-    setHasStarred((post.starIds ?? []).includes(userId));
-  }, [post.likedIds, post.starIds, userId]);
+    setHasStarred((post.saveIds ?? []).includes(userId));
+  }, [post.likedIds, post.saveIds, userId]);
 
   if (!isLoaded) return null;
 
@@ -141,7 +147,9 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
         <div className="text-sm font-semibold flex gap-1">
           <p>Comment</p>
           <div className="hidden md:block">
-            {post?.comments && post?.comments?.length === 0 ? "" : `· ${post?.comments?.length}`}
+            {post?.comments && post?.comments?.length === 0
+              ? ""
+              : `· ${post?.comments?.length}`}
           </div>
         </div>
       </div>
@@ -155,7 +163,9 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
                 <Star size={18} fill="#006EED" />
                 <p>Starred</p>
                 <div className="hidden md:block">
-                  {post?.starIds?.length === 0 ? "" : `· ${post.starIds.length}`}
+                  {post?.saveIds?.length === 0
+                    ? ""
+                    : `· ${post.saveIds.length}`}
                 </div>
               </div>
             ) : (
@@ -163,7 +173,9 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
                 <Star size={18} />
                 <p>Star</p>
                 <div className="hidden md:block">
-                  {post?.starIds?.length === 0 ? "" : `· ${post.starIds.length}`}
+                  {post?.saveIds?.length === 0
+                    ? ""
+                    : `· ${post.saveIds.length}`}
                 </div>
               </div>
             )}

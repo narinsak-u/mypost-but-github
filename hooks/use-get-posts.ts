@@ -16,6 +16,7 @@ export const useGetPosts = ({ limit, userId }: Props) => {
   const { tab } = useSavedTab();
   const normalizedTab = tab.trim().toLowerCase();
   const resolvedLimit = limit ?? 10;
+  const isSelected = tab === "Following" || tab === "Starred";
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, isFetching } =
     useInfiniteQuery({

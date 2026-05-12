@@ -2,13 +2,8 @@
 
 import { Search, Sticker } from "lucide-react";
 
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@/components/auth/SessionGuard";
+import { useSession, signOut } from "@/lib/auth-client";
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -19,18 +14,19 @@ import SearchBox from "./SearchBox";
 
 type Props = {};
 
-type ClerkUser = {
+type SessionUser = {
   id: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  username?: string | null;
-  imageUrl?: string | null;
+  name?: string | null;
+  image?: string | null;
 };
 
-export type PostSearchResult = Awaited<ReturnType<typeof searchPostsAutocomplete>>[number];
+export type PostSearchResult = Awaited<
+  ReturnType<typeof searchPostsAutocomplete>
+>[number];
 
 const Nav = (props: Props) => {
-  const { user, isLoaded } = useUser();
+  const { data: session, isPending: isLoaded } = useSession();
+  const user = session?.user as SessionUser | undefined;
   const router = useRouter();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -47,16 +43,16 @@ const Nav = (props: Props) => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
 
-    const users = ((userList ?? []) as ClerkUser[])
+    const users = ((userList ?? []) as SessionUser[])
       .map((u) => {
-        const name = `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim() || u.username || "User";
-        const handle = `@${u?.firstName ?? ""}${u?.lastName ?? ""}`.trim();
+        const name = u.name || "User";
+        const handle = `@${u.name}`.trim();
 
         return {
           id: u.id,
           name,
           handle,
-          imageUrl: u.imageUrl || "",
+          imageUrl: u.image || "",
         };
       })
       .filter((u) => u.id && u.name);
@@ -147,7 +143,9 @@ const Nav = (props: Props) => {
         onClick={() => router.push("/")}
       >
         <Sticker size={24} />
-        <div className="text-md font-semibold hidden md:block">Mypost but Github</div>
+        <div className="text-md font-semibold hidden md:block">
+          Mypost but Github
+        </div>
       </div>
 
       <button
@@ -179,22 +177,28 @@ const Nav = (props: Props) => {
 
       <div className="flex items-center text-white gap-3 ">
         {user && (
-          <Link href={`/user/${user.id}`} className="text-sm font-medium hidden sm:block">
-            {`${user.fullName ?? user.primaryEmailAddress}`}
+          <Link
+            href={`/user/${user.id}`}
+            className="text-sm font-medium hidden sm:block"
+          >
+            {user.name}
           </Link>
         )}
 
         <SignedIn>
-          <UserButton afterSignOutUrl="/" />
+          <button
+            onClick={() => signOut()}
+            className="w-32.5 h-8 cursor-pointer rounded-md bg-[#238636] text-white font-semibold"
+          >
+            Sign Out
+          </button>
         </SignedIn>
         <SignedOut>
-          <SignInButton mode="modal">
-            <button
-              className="w-32.5 h-8 cursor-pointer rounded-md bg-[#238636] text-white font-semibold"
-            >
+          <Link href="/sign-in">
+            <button className="w-32.5 h-8 cursor-pointer rounded-md bg-[#238636] text-white font-semibold">
               Join Us ✌️🎉
             </button>
-          </SignInButton>
+          </Link>
         </SignedOut>
       </div>
     </div>

@@ -2,11 +2,13 @@ import getPosts from "@/actions/get-posts";
 import { db } from "@/lib/prismadb";
 import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";
+import RightContent from "@/components/contents/RightContent";
 import Feed from "@/components/Feed";
 import Tabs from "@/components/Tabs";
-import type { Metadata } from "next";
-
-export const dynamic = "force-dynamic";
+import Banner from "@/components/Banner";
+import { ProfileBanner } from "@/components/ProfileBanner";
+import { UserProfileUser } from "@/types";
+import { Suspense } from "react";
 
 type Props = {
   params: Promise<{
@@ -14,39 +16,77 @@ type Props = {
   }>;
 };
 
-const UserProfile = async ({ params }: Props) => {
+async function UserProfileContent({
+  params,
+}: {
+  params: Promise<{ userId: string }>;
+}) {
   const { userId } = await params;
   const posts = await getPosts();
+  const users = await db.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    },
+  });
 
-  const user = await db.user.findUnique({ where: { id: userId } });
+  const profileUser = await db.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!profileUser) {
+    return <div>User not found</div>;
+  }
+
+  const typedProfileUser: UserProfileUser = {
+    id: profileUser.id,
+    username: profileUser.name,
+    firstName: null,
+    lastName: null,
+    imageUrl: profileUser.image,
+    email: profileUser.email,
+    createdAt: profileUser.createdAt.getTime(),
+  };
 
   return (
     <>
-      <MainContentWrapper>
-        <ProfileBanner
-          isOwner={isOwner}
-          user={profileUser}
-          starCount={stars.starCount}
-          followersCount={followersCount}
-          followingCount={followingCount}
-          isFollowing={isFollowing}
-        />
+      <div className="col-span-1 hidden sm:block xl:ms-8">
+        <LeftContent users={JSON.parse(JSON.stringify(users))} posts={posts} />
       </div>
       <div className="col-span-3 sm:col-span-2 lg:pl-10 lg:col-span-3 max-w-4xl">
         <MainContent>
           <Banner isProfile />
-          <Tabs firstTab="Posts" secondTab="Saved" isProfile owner={userId} />
-          <Feed isProfile userId={userId} />
+          <ProfileBanner
+            isOwner={false}
+            user={typedProfileUser}
+            starCount={0}
+            followersCount={0}
+            followingCount={0}
+            isFollowing={false}
+          />
+          <Tabs
+            firstTab="For You"
+            secondTab="Following"
+            isProfile
+            owner={userId}
+          />
+          <Feed userId={userId} />
         </MainContent>
+      </div>
+      <div className="col-span-1 hidden lg:flex lg:mx-auto">
+        <RightContent popularPosts={[]} />
       </div>
     </>
   );
-};
+}
 
-export default function UserProfile(props: Props) {
+const UserProfile = ({ params }: Props) => {
   return (
-    <Suspense fallback={<Skeleton />}>
-      <UserProfileContent params={props.params} />
+    <Suspense fallback={<div>Loading...</div>}>
+      <UserProfileContent params={params} />
     </Suspense>
   );
-}
+};
+
+export default UserProfile;

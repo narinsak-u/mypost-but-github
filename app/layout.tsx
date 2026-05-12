@@ -1,9 +1,11 @@
 import { Inter } from "next/font/google";
+import { Metadata } from "next";
 import "./globals.css";
 
 import Providers from "@/providers";
 import Nav from "@/components/nav/Nav";
 import { cn } from "@/lib/utils";
+import { siteMetadata } from "@/site/siteMetadata";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,14 +21,16 @@ type Props = {
 };
 
 async function getCurrentYear() {
-  'use cache'
-  return new Date().getFullYear()
+  return new Date().getFullYear();
 }
 
 export default async function RootLayout({ children }: Props) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(inter.className, "relative")} suppressHydrationWarning>
+      <body
+        className={cn(inter.className, "relative")}
+        suppressHydrationWarning
+      >
         <Providers>
           <Nav />
           {children}

@@ -20,8 +20,8 @@ const RightContent = ({ popularPosts: posts }: Props) => {
         </div>
 
         <div className="my-4">
-          {posts.map((post, index) => (
-            <PostItem key={post.id} post={post} isRanked index={index} />
+          {posts.map((post) => (
+            <PostItem key={post.id} post={post} isSuggestion />
           ))}
         </div>
       </div>

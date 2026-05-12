@@ -1,6 +1,6 @@
 import getPopularPosts from "@/actions/get-popular-posts";
-import { db } from "@/lib/prismadb";
 import getPosts from "@/actions/get-posts";
+import { db } from "@/lib/prismadb";
 
 import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";
@@ -8,10 +8,6 @@ import RightContent from "@/components/contents/RightContent";
 import PostItem from "@/components/posts/PostItem";
 import getPostById from "@/actions/get-post-by-id";
 import { PostPopulated } from "@/types";
-import Link from "next/link";
-import { db } from "@/lib/prismadb";
-
-export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{

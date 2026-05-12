@@ -37,7 +37,7 @@ export const createPost = async (postData: {
         body,
         tag: tag ?? "",
         likedIds: [],
-        starIds: [],
+        saveIds: [],
       },
     });
 
@@ -71,7 +71,6 @@ export const deletePost = async (postId: string) => {
 
     if (!post) throw new Error("Post not found");
 
-
     // check if post belongs to user
     if (post.userId !== userId) {
       throw new Error("Unauthorized");
@@ -85,13 +84,12 @@ export const deletePost = async (postId: string) => {
 
     revalidatePath("/");
 
-    return true
+    return true;
   } catch (error) {
     if (error instanceof z.ZodError) throw new Error(error.message);
     throw error;
   }
-}
-
+};
 
 export type ToggleLikeResult = { hasLiked: boolean } | { error: string };
 
@@ -163,7 +161,7 @@ export const toggleStar = async (postId: string): Promise<ToggleStarResult> => {
 
     if (!post) return { error: "Post not found" };
 
-    const starIds = post.starIds ?? [];
+    const starIds = post.saveIds ?? [];
     const currentlyStarred = starIds.includes(userId);
     const updatedStarIds = currentlyStarred
       ? starIds.filter((id) => id !== userId)
@@ -174,7 +172,7 @@ export const toggleStar = async (postId: string): Promise<ToggleStarResult> => {
         id: postId,
       },
       data: {
-        starIds: updatedStarIds,
+        saveIds: updatedStarIds,
       },
     });
 

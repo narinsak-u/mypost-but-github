@@ -13,7 +13,7 @@ const fetchPost = async () => {
 };
 
 const useGetSavedCount = () => {
-  const { isSelected } = useSavedTab();
+  const { tab } = useSavedTab();
 
   const { data: posts } = useQuery({
     queryKey: queryKeys.counts.saved,

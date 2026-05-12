@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useTransition } from "react";
 import useCreateComment from "@/hooks/use-create-commnet";
 
 import { useSession } from "@/lib/auth-client";
@@ -16,6 +16,7 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
 
   const { createComment, isPending } = useCreateComment(post);
   const { data: session, isPending: isLoaded } = useSession();
+  const [, startTransition] = useTransition();
 
   if (!isLoaded) return null;
 
@@ -23,11 +24,11 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
   const onCreateComment = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        await createComment({ body: commentBody });
+        await createComment({ postId: post.id, body: commentBody });
         setCommentBody("");
       }
     },
-    [createComment, setCommentBody, commentBody],
+    [createComment, setCommentBody, commentBody, post.id],
   );
 
   const disabledInput = isPending || !session?.user?.id;
@@ -52,7 +53,7 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
           if (e.key !== "Enter") return;
           e.preventDefault();
           startTransition(() => {
-            onCreateComment();
+            onCreateComment(e);
           });
         }}
         disabled={disabledInput}

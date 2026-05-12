@@ -21,6 +21,7 @@ import { useTransition } from "react";
 import { deletePost } from "@/actions/post-actions";
 import { deleteComment } from "@/actions/comment-actions";
 import { useValidateQuery } from "@/hooks/use-revalidate-query";
+import { Comment } from "@prisma/client";
 
 type Props = {
   post: Post;
@@ -32,6 +33,41 @@ const OptionMenu = ({ post, comment, isComment }: Props) => {
   const optionModal = useOptionModal();
   const { data: session, isPending: isLoaded } = useSession();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const { validatePostQueries } = useValidateQuery();
+
+  const onDelete = () => {
+    startTransition(async () => {
+      const promise = !isComment
+        ? deletePost(post.id)
+        : deleteComment(comment!.id!);
+
+      toast.promise(
+        promise.then((res: boolean | { error: string }) => {
+          if (typeof res === "object" && "error" in res)
+            throw new Error(res.error);
+          return res === true;
+        }),
+        {
+          loading: "Deleting...",
+          success: () => {
+            return `${!isComment ? "Post" : "Comment"} deleted ‼️`;
+          },
+          error: "Error",
+        },
+      );
+
+      try {
+        await promise;
+
+        //  validate post queries
+        await validatePostQueries({ ...post, comments: [] });
+        router.refresh();
+      } catch (error: any) {
+        toast.error(`${error.message} ‼️`, { duration: 1500 });
+      }
+    });
+  };
 
   const onCopy = () => {
     const text = !isComment
@@ -42,33 +78,6 @@ const OptionMenu = ({ post, comment, isComment }: Props) => {
     toast.success("Link copied 🎉", {
       duration: 1500,
     });
-  };
-
-  const handleAction = async () => {
-    if (isPending) return;
-
-    const promise = !isComment ? deletePost(post.id) : deleteComment(comment!.id!);
-
-    toast.promise(promise.then((res: boolean | { error: string }) => {
-      if (typeof res === 'object' && 'error' in res) throw new Error(res.error);
-      return res === true;
-    }), {
-      loading: "Deleting...",
-      success: () => {
-        return `${!isComment ? "Post" : "Comment"} deleted ‼️`;
-      },
-      error: "Error",
-    });
-
-    try {
-      await promise;
-
-      //  validate post queries
-      await validatePostQueries({ ...post, comments: [] });
-      router.refresh();
-    } catch (error: any) {
-      toast.error(`${error.message} ‼️`, { duration: 1500 });
-    }
   };
 
   if (!isLoaded) return null;

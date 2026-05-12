@@ -5,7 +5,7 @@ import { useSession } from "@/lib/auth-client";
 import useSavedTab from "@/store/use-saved-tab";
 import { Compass, SquareKanban, Star, Users } from "lucide-react";
 import { FIRST_TAB, SECOND_TAB } from "@/types";
-import { useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   firstTab: FIRST_TAB;
@@ -16,9 +16,13 @@ type Props = {
 
 const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
   const { data: session, isPending: isLoaded } = useSession();
-  const { isSelected, onCancel, onSelect } = useSavedTab();
+  const { tab, setTab } = useSavedTab();
 
   if (!isLoaded) return null;
+
+  const isSelected = tab === "Following" || tab === "Starred";
+  const onCancel = () => setTab(firstTab);
+  const onSelect = () => setTab(secondTab || "Following");
 
   return (
     <div className="mt-8">

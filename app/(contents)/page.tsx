@@ -10,8 +10,6 @@ import Tabs from "@/components/Tabs";
 
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
-
 type Props = {};
 
 const page = async (props: Props) => {
@@ -27,7 +25,7 @@ const page = async (props: Props) => {
       <div className="col-span-3 sm:col-span-2">
         <MainContent>
           <Banner />
-          <Tabs firstTab="Feed" />
+          <Tabs firstTab="For You" />
           <Feed />
         </MainContent>
       </div>

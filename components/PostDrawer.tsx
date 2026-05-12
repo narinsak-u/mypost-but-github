@@ -3,7 +3,13 @@
 import { useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Button } from "./ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -22,6 +28,7 @@ import { createPost } from "@/actions/post-actions";
 import { useValidateQuery } from "@/hooks/use-revalidate-query";
 import { BlockNoteEditor } from "@blocknote/core";
 import { useGetUserList } from "@/hooks/use-get-user-list";
+import useCreatePost from "@/hooks/use-create-post";
 
 /* ✅ MOVE THIS HERE */
 const Editor = dynamic(() => import("@/components/editor/Editor"), {
@@ -37,13 +44,13 @@ const PostDrawer = (props: Props) => {
   const [title, setTitle] = useState<string>("Untitled");
   const [selectedTag, setSelectedtag] = useState<Tag | null>(null);
   const { isOpen, onClose } = usePostModal();
-  const [isPending, startTransition] = useTransition();
+  const [isCreating, startTransition] = useTransition();
 
   const router = useRouter();
   const { data: session, isPending: isLoaded } = useSession();
-  const { createPost, isPending } = useCreatePost();
-
-  if (!isLoaded) return null;
+  const { createPost, isPending: isMutationPending } = useCreatePost();
+  const { validatePostQueries } = useValidateQuery();
+  const { usernames } = useGetUserList();
 
   const onChange = async (editor: BlockNoteEditor) => {
     const html = await editor.blocksToHTMLLossy(editor.document);
@@ -78,11 +85,6 @@ const PostDrawer = (props: Props) => {
     }
   };
 
-  const onChange = async (editor: BlockNoteEditor) => {
-    const html = await editor.blocksToHTMLLossy(editor.document);
-    setHTML(html);
-  };
-
   if (!isLoaded) return null;
 
   return (
@@ -97,16 +99,21 @@ const PostDrawer = (props: Props) => {
         <div className="mx-auto w-full h-full flex flex-col">
           <ScrollArea className="h-200">
             <div className="mx-8 my-4 flex justify-end gap-3">
-              <Button className="cursor-pointer" size="sm" variant="outline" onClick={onClose}>
+              <Button
+                className="cursor-pointer"
+                size="sm"
+                variant="outline"
+                onClick={onClose}
+              >
                 Cancel
               </Button>
               <Button
                 size="sm"
                 className="bg-blue-700 cursor-pointer hover:bg-blue-900"
-                disabled={isPending}
+                disabled={isCreating || isMutationPending}
                 onClick={() => startTransition(onCreatePost)}
               >
-                {isPending ? (
+                {isCreating || isMutationPending ? (
                   <>
                     <RotateCcw className="mr-2 h-4 w-4 animate-spin" />
                     Create post

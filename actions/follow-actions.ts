@@ -1,15 +1,17 @@
 "use server";
 
 import { db } from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs/server";
+import { getCurrentSession } from "@/lib/auth-helpers";
 
 // toggle follow
 export const toggleFollow = async (followingId: string) => {
-  const { userId } = await auth();
+  const session = await getCurrentSession();
 
-  if (!userId) {
+  if (!session?.user?.id) {
     return { error: "Unauthorized" };
   }
+
+  const userId = session.user.id;
 
   if (!followingId) {
     return { error: "Following user not found" };
@@ -50,11 +52,13 @@ export const toggleFollow = async (followingId: string) => {
 
 // get is following
 export const getIsFollowing = async (followingId: string) => {
-  const { userId } = await auth();
+  const session = await getCurrentSession();
 
-  if (!userId || !followingId) {
+  if (!session?.user?.id || !followingId) {
     return { isFollowing: false };
   }
+
+  const userId = session.user.id;
 
   try {
     const existingFollow = await db.follow.findFirst({

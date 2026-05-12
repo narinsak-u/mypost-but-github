@@ -24,8 +24,6 @@
     "@blocknote/core": "^0.45.0",
     "@blocknote/mantine": "^0.45.0",
     "@blocknote/react": "^0.45.0",
-    "@clerk/nextjs": "^6.36.5",
-    "@clerk/themes": "^2.4.46",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "6.19",
     "@radix-ui/react-avatar": "^1.1.11",

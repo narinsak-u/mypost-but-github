@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import { toggleFollow } from "@/actions/follow-actions";
 import { UserProfileUser } from "@/types";
 import { useRouter } from "next/navigation";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@/components/auth/SessionGuard";
+import Link from "next/link";
 
 type Props = {
     isOwner: boolean;
@@ -117,7 +118,7 @@ export const ProfileBanner = ({
                                     </button>
                                 </SignedIn>
                                 <SignedOut>
-                                    <SignInButton mode="modal">
+                                    <Link href="/sign-in">
                                         <button
                                             disabled={isPending}
                                             onClick={() => { }}
@@ -127,7 +128,7 @@ export const ProfileBanner = ({
                                             <UserPlus size={16} />
                                             Follow
                                         </button>
-                                    </SignInButton>
+                                    </Link>
                                 </SignedOut>
                                 <a
                                     href={user.email ? `mailto:${user.email}` : undefined}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser } from "@clerk/nextjs";
+import { useSession } from "@/lib/auth-client";
 import { useGetUserList } from "@/hooks/use-get-user-list";
 import Link from "next/link";
 // import { useState, useTransition } from "react";
@@ -22,10 +22,11 @@ const WhoToFollow = () => {
     // const [isPending, startTransition] = useTransition();
     // const [followById, setFollowById] = useState<Record<string, boolean>>({});
     const { data: users } = useGetUserList();
-    const { user, isLoaded } = useUser();
+    const { data: session, isLoaded } = useSession();
+    const sessionUser = session?.user as { id?: string } | undefined;
 
     const suggestions = ((users ?? []) as ClerkUser[])
-        .filter((u) => (user?.id ? u.id !== user.id : true))
+        .filter((u) => (sessionUser?.id ? u.id !== sessionUser.id : true))
         .slice(0, 3)
         .map((u) => {
             return {

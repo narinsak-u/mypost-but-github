@@ -9,24 +9,15 @@ import usePostCount from "@/hooks/use-post-count";
 import { useFormatDate } from "@/hooks/use-format-date";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Post } from "@prisma/client";
+import { Post, User } from "@prisma/client";
 import { Separator } from "../ui/separator";
 import useGetSavedCount from "@/hooks/use-get-saved-count";
 
 type Props = {
-  user?: ClerkUser;
-  users?: ClerkUser[] | null;
+  user?: User;
+  users?: User[] | null;
   posts: Post[];
   isProfile?: boolean;
-};
-
-type ClerkUser = {
-  id: string;
-  firstName: string | null;
-  lastName: string | null;
-  imageUrl: string;
-  emailAddresses: Array<{ emailAddress: string }>;
-  createdAt: string | number;
 };
 
 const LeftContent = ({ users, posts, isProfile, user }: Props) => {
@@ -39,8 +30,7 @@ const LeftContent = ({ users, posts, isProfile, user }: Props) => {
 
   const filteredUser =
     users?.filter((user) =>
-      user.firstName
-        ?.concat(user.lastName!)
+      user.name
         ?.toLocaleLowerCase()
         .includes(username.toLowerCase())
     ) ?? users;
@@ -53,17 +43,17 @@ const LeftContent = ({ users, posts, isProfile, user }: Props) => {
         {isProfile && (
           <div className="flex flex-col gap-5">
             <div>
-              <Avatar className="w-72.5 h-72.5">
-                <AvatarImage
-                  src={user?.imageUrl || "https://github.com/shadcn.png"}
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
+                <Avatar className="w-72.5 h-72.5">
+                  <AvatarImage
+                    src={user?.image || "https://github.com/shadcn.png"}
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
             </div>
             <div className="ms-4">
               <div className="flex flex-col gap-1">
-                <div className="text-3xl font-bold">{`${user?.firstName} ${user?.lastName}`}</div>
-                <div className="text-gray-500 text-sm">{`${user?.emailAddresses[0]?.emailAddress}`}</div>
+                <div className="text-3xl font-bold">{user?.name || "Unknown User"}</div>
+                <div className="text-gray-500 text-sm">{user?.email || "No email"}</div>
                 <div className="text-gray-500 text-sm">{`Join · ${dateFormate(new Date(user?.createdAt!))}`}</div>
               </div>
               <Separator className="my-4 bg-gray-700" />
@@ -108,13 +98,13 @@ const LeftContent = ({ users, posts, isProfile, user }: Props) => {
                     <Avatar>
                       <AvatarImage
                         className=""
-                        src={`${user.imageUrl ?? "https://github.com/octocat.png"}`}
+                        src={`${user.image ?? "https://github.com/octocat.png"}`}
                       />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col mr-4">
                       <div className="text-sm">
-                        {`${user.firstName} ${user.lastName}`}{" "}
+                        {user.name || "Unknown User"}{" "}
                       </div>
                       <div className="text-sm text-[#006EED]">
                         {`${userPostCount[user.id] || 0} posts`}

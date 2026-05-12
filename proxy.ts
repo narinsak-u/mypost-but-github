@@ -17,7 +17,10 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const sessionCookie = request.cookies.get("mypost-session_token");
+  const sessionCookie =
+    request.cookies.get("better-auth.session_token") ??
+    request.cookies.get("mypost-session_token");
+
   if (!sessionCookie) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }

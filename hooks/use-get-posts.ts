@@ -1,11 +1,11 @@
 "use client";
 
 import axios from "axios";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { PostPopulated } from "@/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import useSavedTab from "../store/use-saved-tab";
-import { queryKeys } from "./keys";
+import { postKeys } from "@/lib/query-keys";
 
 type Props = {
   limit?: number;
@@ -17,7 +17,7 @@ export const useGetPosts = ({ limit, userId }: Props) => {
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, isFetching } =
     useInfiniteQuery({
-      queryKey: isSelected ? queryKeys.posts.saved : queryKeys.posts.all,
+      queryKey: postKeys.feed({ isSelected, userId, limit }),
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
         const query =
@@ -37,18 +37,15 @@ export const useGetPosts = ({ limit, userId }: Props) => {
         return allPages.length + 1;
       },
       initialData: { pages: [], pageParams: [1] },
-      // refetchInterval: 1000, // Refetch every 1 second
     });
 
-  const posts = data?.pages.flatMap((page) => page) ?? [];
-  // console.log(posts, "posts");
+  const posts = useMemo(() => data?.pages.flatMap((page) => page) ?? [], [data?.pages]);
 
-  // handle load more
   const loadNextPost = useCallback(async () => {
     if (hasNextPage && !isFetchingNextPage) {
       await fetchNextPage();
     }
-  }, [hasNextPage, isFetchingNextPage]);
+  }, [hastNextPage, isFetchingNextPage, fetchNextPage]);
 
   return { posts, loadNextPost, isFetchingNextPage, hasNextPage, isFetching };
 };

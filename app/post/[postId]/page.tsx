@@ -19,10 +19,21 @@ type Props = {
 
 const PostPage = async ({ params }: Props) => {
   const { postId } = await params;
-  const users = await db.user.findMany();
-  const popularPosts = await getPopularPosts();
-  const posts = await getPosts();
-  const post = (await getPostById(postId)) as PostPopulated;
+
+  const [users, popularPosts, posts, post] = await Promise.all([
+    db.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        image: true,
+      },
+    }),
+    getPopularPosts(),
+    getPosts(),
+    getPostById(postId),
+  ]);
+
+  const typedPost = post as PostPopulated;
 
   return (
     <>
@@ -31,7 +42,7 @@ const PostPage = async ({ params }: Props) => {
       </div>
       <div className="col-span-3 sm:col-span-2">
         <MainContent>
-          <PostItem post={post} isPost />
+          <PostItem post={typedPost} isPost />
         </MainContent>
       </div>
       <div className="col-span-1 hidden lg:flex lg:mx-auto ">

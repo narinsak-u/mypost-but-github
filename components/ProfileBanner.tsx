@@ -51,13 +51,15 @@ export const ProfileBanner = ({
     year: "numeric",
   });
 
+  console.log(user, "user in ProfileBanner");
+
   return (
     <div className="mb-6 overflow-hidden rounded-lg border border-[#30363D] bg-linear-to-b from-[#161B22] to-[#0D1117]">
       <div className="p-4 sm:p-8">
         <div className="flex items-center gap-5 w-full flex-col sm:flex-row">
           <Avatar className="h-32 w-32 border-4 border-[#0D1117] shadow-sm">
             <AvatarImage
-              src={user.imageUrl || "https://github.com/shadcn.png"}
+              src={user?.imageUrl || "https://github.com/shadcn.png"}
             />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>

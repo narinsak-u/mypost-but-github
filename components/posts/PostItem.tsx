@@ -42,7 +42,7 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
               <Link href={`/user/${user?.id}`}>
                 <Avatar className="w-7.5 h-7.5">
                   <AvatarImage
-                    src={`${user?.image}` || "https://github.com/shadcn.png"}
+                    src={user?.imageUrl || "https://github.com/shadcn.png"}
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>

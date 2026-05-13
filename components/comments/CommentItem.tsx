@@ -24,7 +24,9 @@ const CommentItem = ({ comment, post }: Props) => {
       <div className="flex items-center justify-start h-fit">
         <Link href={`/user/${comment.userId}`}>
           <Avatar className="w-6.25 h-6.25">
-            <AvatarImage src={user?.image ?? "https://github.com/shadcn.png"} />
+            <AvatarImage
+              src={user?.imageUrl || "https://github.com/shadcn.png"}
+            />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </Link>

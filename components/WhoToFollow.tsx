@@ -46,7 +46,7 @@ const WhoToFollow = () => {
               >
                 <Avatar className="h-10 w-10 shrink-0">
                   <AvatarImage
-                    src={suggestion.imageUrl}
+                    src={`${suggestion.imageUrl || "https://github.com/shadcn.png"}`}
                     alt={suggestion.name}
                   />
                   <AvatarFallback>

@@ -97,7 +97,7 @@ const PostDrawer = (props: Props) => {
           </DrawerHeader>
         </VisuallyHidden>
         <div className="mx-auto w-full h-full flex flex-col">
-          <ScrollArea className="h-200">
+          <ScrollArea className="h-180 max-h-200">
             <div className="mx-8 my-4 flex justify-end gap-3">
               <Button
                 className="cursor-pointer"

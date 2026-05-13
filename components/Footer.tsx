@@ -33,7 +33,6 @@ const Footer = ({ getCurrentYear }: { getCurrentYear: number }) => {
           >
             Better Auth
           </a>
-          .
         </div>
       </div>
     </footer>

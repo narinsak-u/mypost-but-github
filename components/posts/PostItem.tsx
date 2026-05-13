@@ -25,12 +25,7 @@ type Props = {
   className?: string;
 };
 
-const PostItem = ({
-  post,
-  isPost,
-  isSuggestion,
-  className,
-}: Props) => {
+const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: Boolean(!isSuggestion && isPost),
   });
@@ -47,19 +42,25 @@ const PostItem = ({
               <Link href={`/user/${user?.id}`}>
                 <Avatar className="w-7.5 h-7.5">
                   <AvatarImage
-                    src={`${user?.imageUrl}` || "https://github.com/shadcn.png"}
+                    src={`${user?.image}` || "https://github.com/shadcn.png"}
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </Link>
               <div className="flex flex-col">
                 <div className="text-sm">
-                  <Link className="hover:underline" href={`/user/${user?.id}`}>{`${user?.firstName} ${user?.lastName}`}</Link>
+                  <Link className="hover:underline" href={`/user/${user?.id}`}>
+                    {`${user?.name}`}
+                  </Link>
                   <span className="text-[#ADBAC7] px-1">posted</span>
-                  <Link className="hover:underline" href={`/post/${post.id}`}>{post.title}</Link>
+                  <Link className="hover:underline" href={`/post/${post.id}`}>
+                    {post.title}
+                  </Link>
                 </div>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <span>{formatDistanceToNow(new Date(post.createdAt))} ago</span>
+                  <span>
+                    {formatDistanceToNow(new Date(post.createdAt))} ago
+                  </span>
                 </div>
               </div>
 
@@ -78,7 +79,6 @@ const PostItem = ({
 
             {/* author action */}
             <OptionMenu post={post} />
-
           </div>
         )}
       </div>
@@ -86,7 +86,7 @@ const PostItem = ({
         <div
           className={cn(
             "flex flex-col",
-            isSuggestion ? "h-22 px-4 py-2" : "mx-8 my-5"
+            isSuggestion ? "h-22 px-4 py-2" : "mx-8 my-5",
           )}
         >
           <div
@@ -97,7 +97,7 @@ const PostItem = ({
               <div
                 className={cn(
                   "text-sm font-semibold mb-0.5",
-                  isSuggestion && "line-clamp-2"
+                  isSuggestion && "line-clamp-2",
                 )}
               >
                 {post.title}
@@ -105,7 +105,7 @@ const PostItem = ({
             </div>
             <div
               className={cn(
-                isSuggestion && "text-xs text-[#ADBAC7] line-clamp-2 mt-2"
+                isSuggestion && "text-xs text-[#ADBAC7] line-clamp-2 mt-2",
               )}
               dangerouslySetInnerHTML={{ __html: postBody! }}
             />

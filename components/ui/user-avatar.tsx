@@ -45,13 +45,14 @@ export function UserAvatar({
     );
   }
 
+  const isFullSize = className?.includes("h-full");
+
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-full bg-muted font-medium",
-        sizeClasses[size],
+        "flex shrink-0 items-center justify-center rounded-full bg-muted font-bold",
+        isFullSize ? className : sizeClasses[size],
         initialsSizeClasses[size],
-        className,
       )}
     >
       {initial}

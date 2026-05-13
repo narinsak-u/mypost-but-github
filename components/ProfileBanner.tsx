@@ -1,6 +1,7 @@
 "use client";
 
 import { Calendar, Mail, Star, UserPlus, Users2 } from "lucide-react";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { toggleFollow } from "@/actions/follow-actions";
@@ -43,31 +44,22 @@ export const ProfileBanner = ({
 
   const displayName = user.name || "User";
 
-  const initials = displayName[0]?.toUpperCase() || "U";
-
   const joined = new Date(user.createdAt).toLocaleDateString(undefined, {
     month: "short",
     year: "numeric",
   });
 
-  
   return (
     <div className="mb-6 overflow-hidden rounded-lg border border-[#30363D] bg-linear-to-b from-[#161B22] to-[#0D1117]">
       <div className="p-4 sm:p-8">
         <div className="flex items-center gap-5 w-full flex-col sm:flex-row">
           <div className="h-32 w-32 shrink-0 rounded-full border-4 border-[#0D1117] shadow-sm overflow-hidden">
-            {user?.imageUrl ? (
-              <img
-                className="h-full w-full object-cover"
-                src={user.imageUrl}
-                alt={displayName}
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-muted text-3xl font-bold">
-                {initials}
-              </div>
-            )}
+            <UserAvatar
+              imageUrl={user?.imageUrl}
+              name={displayName}
+              size="lg"
+              className="h-full w-full"
+            />
           </div>
 
           <div className="flex items-center justify-center sm:justify-between sm:pr-8 gap-4 flex-col sm:flex-row pb-4 w-full">

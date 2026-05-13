@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import Tag from "../Tag";
 import ReactionButton from "./ReactionButton";
 import CommentSection from "../comments/CommentSection";
@@ -40,12 +40,12 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
           <div className="flex justify-between w-full gap-1">
             <div className="flex items-center gap-2">
               <Link href={`/user/${user?.id}`}>
-                <Avatar className="w-7.5 h-7.5">
-                  <AvatarImage
-                    src={user?.imageUrl || "https://github.com/shadcn.png"}
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  imageUrl={user?.image}
+                  name={user?.name}
+                  size="md"
+                  className="h-7.5 w-7.5"
+                />
               </Link>
               <div className="flex flex-col">
                 <div className="text-sm">
@@ -63,21 +63,8 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
                   </span>
                 </div>
               </div>
-
-              {/* follow button */}
-              {/* <div className="self-start text-sm text-muted-foreground">
-                <button
-                  className={cn(
-                    "px-2 py-0.5 text-xs cursor-pointer text-[#8B949E] bg-[#161B22] border border-[#30363D] rounded-sm"
-                  )}
-                  onClick={() => setIsFollowing(!isFollowing)}
-                >
-                  {isFollowing ? "Following" : "Follow"}
-                </button>
-              </div> */}
             </div>
 
-            {/* author action */}
             <OptionMenu post={post} />
           </div>
         )}

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { authClient } from "@/lib/auth-client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { Input } from "@/components/ui/input";
 import { createComment } from "@/actions/comment-actions";
 import { useValidateQuery } from "@/hooks/use-revalidate-query";
@@ -45,16 +45,12 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
   return (
     <div className="flex items-center justify-start my-3 mx-6 ">
       <div>
-        <Avatar className="w-6.25 h-6.25">
-          <AvatarImage
-            src={session?.user?.image || "https://github.com/shadcn.png"}
-          />
-          <AvatarFallback>
-            {(session?.user?.name ??
-              session?.user?.email ??
-              "U")[0]?.toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          imageUrl={session?.user?.image}
+          name={session?.user?.name ?? session?.user?.email}
+          size="sm"
+          className="w-6.25 h-6.25"
+        />
       </div>
       <Input
         aria-label="text"

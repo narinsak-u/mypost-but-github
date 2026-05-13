@@ -1,9 +1,9 @@
 "use client";
 
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { useGetUserList } from "@/hooks/use-get-user-list";
 import Link from "next/link";
+import { UserAvatar } from "@/components/ui/user-avatar";
 
 const WhoToFollow = () => {
   const { data: users } = useGetUserList();
@@ -12,14 +12,12 @@ const WhoToFollow = () => {
   const suggestions = (users ?? [])
     .filter((u: any) => (session?.user?.id ? u.id !== session.user.id : true))
     .slice(0, 3)
-    .map((u: any) => {
-      return {
-        id: u.id,
-        name: u.name || "User",
-        handle: `@${(u.name || "User").replace(/\s+/g, "")}`,
-        imageUrl: u.image || "",
-      };
-    });
+    .map((u: any) => ({
+      id: u.id,
+      name: u.name || "User",
+      handle: `@${(u.name || "User").replace(/\s+/g, "")}`,
+      imageUrl: u.image,
+    }));
 
   return (
     <section className="mt-12">
@@ -44,15 +42,12 @@ const WhoToFollow = () => {
                 href={`/user/${suggestion.id}`}
                 className="flex min-w-0 items-center gap-3"
               >
-                <Avatar className="h-10 w-10 shrink-0">
-                  <AvatarImage
-                    src={`${suggestion.imageUrl || "https://github.com/shadcn.png"}`}
-                    alt={suggestion.name}
-                  />
-                  <AvatarFallback>
-                    {suggestion.name.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  imageUrl={suggestion.imageUrl}
+                  name={suggestion.name}
+                  size="lg"
+                  className="h-10 w-10 shrink-0"
+                />
                 <div className="min-w-0">
                   <div className="truncate text-sm font-semibold text-white">
                     {suggestion.name}

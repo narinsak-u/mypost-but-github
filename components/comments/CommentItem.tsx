@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { Comment } from "@prisma/client";
 import { useGetUser } from "@/hooks/use-get-user";
 import { formatDistanceToNow } from "date-fns";
@@ -15,7 +15,7 @@ type Props = {
 };
 
 const CommentItem = ({ comment, post }: Props) => {
-  const { data: user, isFetching } = useGetUser({ userId: comment.userId });
+  const { data: user } = useGetUser({ userId: comment.userId });
   const { data: session } = authClient.useSession();
 
   return (
@@ -23,12 +23,12 @@ const CommentItem = ({ comment, post }: Props) => {
       <div className="w-0.5 h-3 bg-[#444C56] ms-24" />
       <div className="flex items-center justify-start h-fit">
         <Link href={`/user/${comment.userId}`}>
-          <Avatar className="w-6.25 h-6.25">
-            <AvatarImage
-              src={user?.imageUrl || "https://github.com/shadcn.png"}
-            />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            imageUrl={user?.image}
+            name={user?.name}
+            size="sm"
+            className="w-6.25 h-6.25"
+          />
         </Link>
         <div className="flex bg-[#30363E] w-full py-1 px-3 flex-col ml-4 border border-[#444C56] rounded-sm">
           <div className="flex justify-between w-full gap-1">

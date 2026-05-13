@@ -9,7 +9,7 @@ import {
   CommandSeparator,
   CommandInput,
 } from "@/components/ui/command";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { useRouter } from "next/navigation";
 import { PostSearchResult } from "./Nav";
 import { renderHighlight } from "./render-highlight";
@@ -84,12 +84,12 @@ const SearchBox = ({
                     }}
                   >
                     <div className="flex items-center gap-3">
-                      <Avatar className="w-7 h-7">
-                        <AvatarImage
-                          src={u.imageUrl || "https://github.com/shadcn.png"}
-                        />
-                        <AvatarFallback>U</AvatarFallback>
-                      </Avatar>
+                      <UserAvatar
+                        imageUrl={u.imageUrl || undefined}
+                        name={u.name}
+                        size="sm"
+                        className="w-7 h-7"
+                      />
                       <div className="flex flex-col">
                         <span className="text-sm text-[#C9D1D9]">{u.name}</span>
                         {u.handle ? (

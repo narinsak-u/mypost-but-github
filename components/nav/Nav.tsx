@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
 
 type Props = {};
 
@@ -181,17 +181,12 @@ const Nav = (props: Props) => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="rounded-full overflow-hidden">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={session.user.image ?? undefined}
-                    alt={session.user.name ?? ""}
-                  />
-                  <AvatarFallback>
-                    {(session.user.name ?? session.user.email ?? "U")
-                      .charAt(0)
-                      .toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  imageUrl={session.user.image}
+                  name={session.user.name ?? session.user.email}
+                  size="md"
+                  className="h-8 w-8"
+                />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

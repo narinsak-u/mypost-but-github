@@ -2,7 +2,15 @@
 
 import { db as prisma } from "@/lib/prismadb";
 import { z } from "zod";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+async function getUserId(): Promise<string | null> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  return session?.user?.id ?? null;
+}
 
 import { PostValidator } from "@/types";
 import { revalidatePath } from "next/cache";
@@ -21,7 +29,7 @@ export const createPost = async (postData: {
   tag: string;
   body: string;
 }) => {
-  const { userId } = await auth();
+  const userId = await getUserId();
 
   try {
     if (!userId) {
@@ -52,7 +60,7 @@ export const createPost = async (postData: {
 
 // delete post
 export const deletePost = async (postId: string) => {
-  const { userId } = await auth();
+  const userId = await getUserId();
 
   try {
     if (!userId) {
@@ -71,7 +79,6 @@ export const deletePost = async (postId: string) => {
 
     if (!post) throw new Error("Post not found");
 
-
     // check if post belongs to user
     if (post.userId !== userId) {
       throw new Error("Unauthorized");
@@ -85,19 +92,18 @@ export const deletePost = async (postId: string) => {
 
     revalidatePath("/");
 
-    return true
+    return true;
   } catch (error) {
     if (error instanceof z.ZodError) throw new Error(error.message);
     throw error;
   }
-}
-
+};
 
 export type ToggleLikeResult = { hasLiked: boolean } | { error: string };
 
 // togglelike post
 export const toggleLike = async (postId: string): Promise<ToggleLikeResult> => {
-  const { userId } = await auth();
+  const userId = await getUserId();
 
   try {
     if (!userId) {
@@ -144,7 +150,7 @@ export type ToggleStarResult = { hasStarred: boolean } | { error: string };
 
 // toggle star post
 export const toggleStar = async (postId: string): Promise<ToggleStarResult> => {
-  const { userId } = await auth();
+  const userId = await getUserId();
 
   try {
     if (!userId) {

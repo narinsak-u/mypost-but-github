@@ -1,6 +1,6 @@
 # Agent Guidelines for mypost-but-github
 
-A mini social media app inspired by GitHub + Pantip built with Next.js App Router, Clerk auth, Prisma/MongoDB, and Tailwind CSS.
+A mini social media app inspired by GitHub + Pantip built with Next.js App Router, Better Auth, Prisma/MongoDB, and Tailwind CSS.
 
 ---
 
@@ -73,6 +73,7 @@ mypost-but-github/
 - Define types in `types/index.ts` using Zod validators
 - Use interfaces for object shapes, types for unions/primitives
 - Example pattern:
+
   ```typescript
   import { z } from "zod";
 
@@ -102,6 +103,7 @@ mypost-but-github/
 - Server components by default, add `"use client"` only when needed
 
 Example:
+
 ```typescript
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "default" | "outline";
@@ -126,12 +128,13 @@ export function Button({ className, variant = "default", ...props }: ButtonProps
 - Call `revalidatePath()` after mutations
 
 Example:
+
 ```typescript
 export type ToggleLikeResult = { hasLiked: boolean } | { error: string };
 
 export const toggleLike = async (postId: string): Promise<ToggleLikeResult> => {
   const { userId } = await auth();
-  
+
   try {
     if (!userId) return { error: "Unauthorized" };
     // ... mutation logic
@@ -167,39 +170,40 @@ export const toggleLike = async (postId: string): Promise<ToggleLikeResult> => {
 
 ### 2.10 Authentication
 
-- Use Clerk (`@clerk/nextjs`)
-- Server components: `import { auth } from "@clerk/nextjs/server"`
-- Client components: `import { useUser } from "@clerk/nextjs"`
-- Protect routes by checking `userId` from `auth()`
+- Use Better Auth (`better-auth`)
+- Server: `import { auth } from "@/lib/auth"` then `auth.api.getSession({ headers: await headers() })`
+- Client: `import { authClient } from "@/lib/auth-client"` then `authClient.useSession()`
+- Login modal: `import { LoginModal } from "@/components/auth/LoginModal"`
+- Protect routes by checking `session?.user?.id`
 
 ---
 
 ## 3. Key Dependencies
 
-| Category | Library |
-|----------|---------|
-| Framework | Next.js 16 (App Router) |
-| UI | React 19, Tailwind CSS 4, Radix UI |
-| Auth | Clerk |
-| Database | Prisma 6, MongoDB |
-| State | TanStack Query, Zustand |
-| Forms | React Hook Form, Zod |
-| Editor | BlockNote |
+| Category  | Library                            |
+| --------- | ---------------------------------- |
+| Framework | Next.js 16 (App Router)            |
+| UI        | React 19, Tailwind CSS 4, Radix UI |
+| Auth      | Better Auth                        |
+| Database  | Prisma 6, MongoDB                  |
+| State     | TanStack Query, Zustand            |
+| Forms     | React Hook Form, Zod               |
+| Editor    | BlockNote                          |
 
 ---
 
 ## 4. Environment Variables
 
-Create `.env` from `.env.example`:
+Create `.env` with:
 
 ```bash
 DATABASE_URL="mongodb+srv://..."
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_..."
-CLERK_SECRET_KEY="sk_..."
-NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
-NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/"
+BETTER_AUTH_SECRET="..."
+BETTER_AUTH_URL="http://localhost:3000"
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
+GITHUB_CLIENT_ID="..."
+GITHUB_CLIENT_SECRET="..."
 ```
 
 ---

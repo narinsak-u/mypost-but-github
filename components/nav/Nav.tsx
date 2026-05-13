@@ -1,14 +1,8 @@
 "use client";
 
 import { Search, Sticker } from "lucide-react";
-
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { authClient } from "@/lib/auth-client";
+import { LoginModal } from "@/components/auth/LoginModal";
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -16,21 +10,22 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useGetUserList } from "@/hooks/use-get-user-list";
 import { searchPostsAutocomplete } from "@/actions/search-posts-atlas";
 import SearchBox from "./SearchBox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {};
 
-type ClerkUser = {
-  id: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  username?: string | null;
-  imageUrl?: string | null;
-};
-
-export type PostSearchResult = Awaited<ReturnType<typeof searchPostsAutocomplete>>[number];
+export type PostSearchResult = Awaited<
+  ReturnType<typeof searchPostsAutocomplete>
+>[number];
 
 const Nav = (props: Props) => {
-  const { user, isLoaded } = useUser();
+  const { data: session } = authClient.useSession();
   const router = useRouter();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -42,31 +37,29 @@ const Nav = (props: Props) => {
 
   const { data: userList } = useGetUserList();
 
-  // Memoize the filtered users to avoid re-calculating on every render
   const filteredUsers = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
 
-    const users = ((userList ?? []) as ClerkUser[])
-      .map((u) => {
-        const name = `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim() || u.username || "User";
-        const handle = `@${u?.firstName ?? ""}${u?.lastName ?? ""}`.trim();
+    const users = (userList ?? [])
+      .map((u: any) => {
+        const name = u.name || u.email?.split("@")[0] || "User";
+        const handle = `@${name.replace(/\s+/g, "")}`;
 
         return {
           id: u.id,
           name,
           handle,
-          imageUrl: u.imageUrl || "",
+          imageUrl: u.image || "",
         };
       })
-      .filter((u) => u.id && u.name);
+      .filter((u: any) => u.id && u.name);
 
     return users
-      .filter((u) => `${u.name} ${u.handle}`.toLowerCase().includes(q))
+      .filter((u: any) => `${u.name} ${u.handle}`.toLowerCase().includes(q))
       .slice(0, 8);
   }, [query, userList]);
 
-  // "/" key down effect
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "/") return;
@@ -90,7 +83,6 @@ const Nav = (props: Props) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  // Focus the search input when the search dialog is opened
   useEffect(() => {
     if (!isSearchOpen) return;
 
@@ -98,14 +90,12 @@ const Nav = (props: Props) => {
     return () => window.clearTimeout(t);
   }, [isSearchOpen]);
 
-  // Search posts when the query is changed
   useEffect(() => {
     if (!isSearchOpen) return;
 
     const trimmed = query.trim();
     const reqId = ++postSearchReqId.current;
 
-    // Debounce the search request to avoid sending too many requests
     if (trimmed.length < 2) {
       setPostResults([]);
       setIsSearchingPosts(false);
@@ -138,8 +128,6 @@ const Nav = (props: Props) => {
     setIsSearchOpen(true);
   };
 
-  if (!isLoaded) return null;
-
   return (
     <div className="h-16.25 mb-12 border-b border-[#30363D] flex justify-between items-center px-5 md:px-0 gap-2 ">
       <div
@@ -147,7 +135,9 @@ const Nav = (props: Props) => {
         onClick={() => router.push("/")}
       >
         <Sticker size={24} />
-        <div className="text-md font-semibold hidden md:block">Mypost but Github</div>
+        <div className="text-md font-semibold hidden md:block">
+          Mypost but Github
+        </div>
       </div>
 
       <button
@@ -178,24 +168,50 @@ const Nav = (props: Props) => {
       />
 
       <div className="flex items-center text-white gap-3 ">
-        {user && (
-          <Link href={`/user/${user.id}`} className="text-sm font-medium hidden sm:block">
-            {`${user.fullName ?? user.primaryEmailAddress}`}
+        {session?.user && (
+          <Link
+            href={`/user/${session.user.id}`}
+            className="text-sm font-medium hidden sm:block"
+          >
+            {session.user.name ?? session.user.email}
           </Link>
         )}
 
-        <SignedIn>
-          <UserButton afterSignOutUrl="/" />
-        </SignedIn>
-        <SignedOut>
-          <SignInButton mode="modal">
-            <button
-              className="w-32.5 h-8 cursor-pointer rounded-md bg-[#238636] text-white font-semibold"
-            >
+        {session?.user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="rounded-full overflow-hidden">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={session.user.image ?? undefined}
+                    alt={session.user.name ?? ""}
+                  />
+                  <AvatarFallback>
+                    {(session.user.name ?? session.user.email ?? "U")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => {
+                  authClient.signOut();
+                  router.push("/");
+                }}
+              >
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <LoginModal>
+            <button className="w-32.5 h-8 cursor-pointer rounded-md bg-[#238636] text-white font-semibold">
               Join Us ✌️🎉
             </button>
-          </SignInButton>
-        </SignedOut>
+          </LoginModal>
+        )}
       </div>
     </div>
   );

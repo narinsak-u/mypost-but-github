@@ -3,7 +3,13 @@
 import { useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Button } from "./ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -11,7 +17,7 @@ import usePostModal from "@/store/use-post-modal";
 import NewTag from "./new-tag";
 
 import { Tag, TagOptions } from "@/data/tags";
-import { useAuth } from "@clerk/nextjs";
+import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 import Toolbar from "./Toolbar";
@@ -40,9 +46,10 @@ const PostDrawer = (props: Props) => {
   const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
-  const { userId, isLoaded } = useAuth();
+  const { data: session } = authClient.useSession();
+  const userId = session?.user?.id;
   const { validatePostQueries } = useValidateQuery();
-  const { usernames } = useGetUserList()
+  const { usernames } = useGetUserList();
 
   const onCreatePost = async () => {
     if (!userId) return;
@@ -78,7 +85,7 @@ const PostDrawer = (props: Props) => {
     setHTML(html);
   };
 
-  if (!isLoaded) return null;
+  if (!session) return null;
 
   return (
     <Drawer open={isOpen} onClose={onClose}>
@@ -92,7 +99,12 @@ const PostDrawer = (props: Props) => {
         <div className="mx-auto w-full h-full flex flex-col">
           <ScrollArea className="h-200">
             <div className="mx-8 my-4 flex justify-end gap-3">
-              <Button className="cursor-pointer" size="sm" variant="outline" onClick={onClose}>
+              <Button
+                className="cursor-pointer"
+                size="sm"
+                variant="outline"
+                onClick={onClose}
+              >
                 Cancel
               </Button>
               <Button

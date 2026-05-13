@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGetUserList = () => {
   const { data, isFetching } = useQuery({
-    queryKey: ["fetct-user-list"],
+    queryKey: ["fetch-user-list"],
     queryFn: async () => {
       const { data } = await axios.get(`/api/user`);
       return data.data || [];
@@ -13,7 +13,7 @@ export const useGetUserList = () => {
   });
 
   const usernames =
-    (data && data.map((user) => `${user.firstName} ${user.lastName}`)) ?? [];
+    (data && data.map((user: any) => user.name ?? "User")) ?? [];
 
   return { data, isFetching, usernames };
 };

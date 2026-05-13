@@ -54,16 +54,13 @@ export const CommentValidator = z.object({
 export type FormData = z.infer<typeof PostValidator>;
 export type CommentInput = z.infer<typeof CommentValidator>;
 
-
 export type UserProfileUser = {
   imageUrl: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  username: string | null;
+  name: string | null;
   email: string | null;
   createdAt: number;
   id: string;
-}
+};
 
 export type FIRST_TAB = "For You" | "Overview";
 export type SECOND_TAB = "Following" | "Starred";

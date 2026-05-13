@@ -115,28 +115,3 @@ body,
     @apply table-auto;
   }
 }
-
-/* Clerk signin color */
-/* .cl-formButtonPrimary {
-  font-size: 14px;
-  text-transform: none;
-  background-color: #22272e;
-}
-
-.cl-formButtonPrimary:hover,
-.cl-formButtonPrimary:focus,
-.cl-formButtonPrimary:active {
-  background-color: #22272e;
-}
-
-.cl-internal-vwxx4q {
-  background-color: #22272e;
-}
-
-.cl-internal-a1vcu4 {
-  color: #006eed;
-}
-.cl-internal-a1vcu4:hover {
-  color: blue;
-  text-decoration: none;
-} */

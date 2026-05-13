@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import useOptionModal from "@/store/use-option-modal";
-import { useAuth } from "@clerk/nextjs";
+import { authClient } from "@/lib/auth-client";
 import { Post, Comment } from "@prisma/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -30,7 +30,8 @@ type Props = {
 
 const OptionMenu = ({ post, comment, isComment }: Props) => {
   const optionModal = useOptionModal();
-  const { userId, isLoaded } = useAuth();
+  const { data: session } = authClient.useSession();
+  const userId = session?.user?.id;
   const [isPending, startTransition] = useTransition();
   const { validatePostQueries } = useValidateQuery();
   const router = useRouter();
@@ -49,18 +50,24 @@ const OptionMenu = ({ post, comment, isComment }: Props) => {
   const handleAction = async () => {
     if (isPending) return;
 
-    const promise = !isComment ? deletePost(post.id) : deleteComment(comment!.id!);
+    const promise = !isComment
+      ? deletePost(post.id)
+      : deleteComment(comment!.id!);
 
-    toast.promise(promise.then((res: boolean | { error: string }) => {
-      if (typeof res === 'object' && 'error' in res) throw new Error(res.error);
-      return res === true;
-    }), {
-      loading: "Deleting...",
-      success: () => {
-        return `${!isComment ? "Post" : "Comment"} deleted ‼️`;
+    toast.promise(
+      promise.then((res: boolean | { error: string }) => {
+        if (typeof res === "object" && "error" in res)
+          throw new Error(res.error);
+        return res === true;
+      }),
+      {
+        loading: "Deleting...",
+        success: () => {
+          return `${!isComment ? "Post" : "Comment"} deleted ‼️`;
+        },
+        error: "Error",
       },
-      error: "Error",
-    });
+    );
 
     try {
       await promise;
@@ -73,7 +80,7 @@ const OptionMenu = ({ post, comment, isComment }: Props) => {
     }
   };
 
-  if (!isLoaded) return null;
+  if (!session) return null;
 
   return (
     <DropdownMenu onOpenChange={optionModal.onClose}>
@@ -89,7 +96,10 @@ const OptionMenu = ({ post, comment, isComment }: Props) => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {(userId === post.userId || userId === comment?.userId) && (
-            <DropdownMenuItem disabled={isPending} onClick={() => startTransition(handleAction)}>
+            <DropdownMenuItem
+              disabled={isPending}
+              onClick={() => startTransition(handleAction)}
+            >
               Delete
               <DropdownMenuShortcut>
                 <Trash2 size={15} />

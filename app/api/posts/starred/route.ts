@@ -1,16 +1,21 @@
 import { db as prisma } from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const { userId } = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (!userId) {
+  if (!session?.user?.id) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const userId = session.user.id;
 
   try {
     const { limit, page } = z
@@ -58,4 +63,3 @@ export async function GET(request: Request) {
     return new NextResponse("Could not fetch posts", { status: 500 });
   }
 }
-

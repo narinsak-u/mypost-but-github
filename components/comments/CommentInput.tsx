@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useUser } from "@clerk/nextjs";
+import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { createComment } from "@/actions/comment-actions";
@@ -12,20 +12,27 @@ import { PostPopulated } from "@/types";
 const CommentInput = ({ post }: { post: PostPopulated }) => {
   const [commentBody, setCommentBody] = useState<string>("");
   const [isPending, startTransition] = useTransition();
-  const { user, isLoaded } = useUser();
+  const { data: session } = authClient.useSession();
+  const userId = session?.user?.id;
   const router = useRouter();
 
   const { validatePostQueries } = useValidateQuery();
 
   const onCreateComment = async () => {
-    if (isPending || !user?.id || !post.id || commentBody.trim() === "") return;
+    if (isPending || !userId || !post.id || commentBody.trim() === "") return;
 
     try {
-      const comment = await createComment({ postId: post.id, body: commentBody });
+      const comment = await createComment({
+        postId: post.id,
+        body: commentBody,
+      });
 
       if (!("error" in comment)) {
         setCommentBody("");
-        await validatePostQueries({ ...post, comments: [...post.comments, comment] });
+        await validatePostQueries({
+          ...post,
+          comments: [...post.comments, comment],
+        });
         router.refresh();
       }
     } catch (error) {
@@ -33,19 +40,18 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
     }
   };
 
-  const disabledInput = isPending || !user?.id || !post.id;
-
-  // Check if user is loaded
-  if (!isLoaded) return null;
+  const disabledInput = isPending || !userId || !post.id;
 
   return (
     <div className="flex items-center justify-start my-3 mx-6 ">
       <div>
         <Avatar className="w-6.25 h-6.25">
-          <AvatarImage
-            src={`${user?.imageUrl}` || "https://github.com/shadcn.png"}
-          />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={session?.user?.image ?? undefined} />
+          <AvatarFallback>
+            {(session?.user?.name ??
+              session?.user?.email ??
+              "U")[0]?.toUpperCase()}
+          </AvatarFallback>
         </Avatar>
       </div>
       <Input
@@ -53,7 +59,7 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
         placeholder={
           isPending
             ? "Comment creating..."
-            : user?.id === undefined
+            : !userId
               ? "Sign in to comment"
               : "Type here..."
         }

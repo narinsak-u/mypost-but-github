@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { useGetUserList } from "@/hooks/use-get-user-list";
 import Link from "next/link";
@@ -43,11 +44,15 @@ const WhoToFollow = () => {
                 href={`/user/${suggestion.id}`}
                 className="flex min-w-0 items-center gap-3"
               >
-                <img
-                  className="h-10 w-10 shrink-0 rounded-full"
-                  src={suggestion.imageUrl}
-                  alt={suggestion.name}
-                />
+                <Avatar className="h-10 w-10 shrink-0">
+                  <AvatarImage
+                    src={suggestion.imageUrl}
+                    alt={suggestion.name}
+                  />
+                  <AvatarFallback>
+                    {suggestion.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
                 <div className="min-w-0">
                   <div className="truncate text-sm font-semibold text-white">
                     {suggestion.name}

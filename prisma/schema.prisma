@@ -11,7 +11,8 @@ model User {
     id            String    @id @default(cuid()) @map("_id")
     name          String?
     email         String?   @unique
-    emailVerified DateTime?
+    emailVerified Boolean?
+    password      String?
     image         String?
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
@@ -28,6 +29,8 @@ model Session {
     id        String   @id @default(cuid()) @map("_id")
     expiresAt DateTime
     token     String   @unique
+    ipAddress String?
+    userAgent String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     
@@ -36,22 +39,26 @@ model Session {
 }
 
 model Account {
-    id                String  @id @default(cuid()) @map("_id")
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? @db.String
-    access_token      String? @db.String
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? @db.String
-    session_state     String?
+    id                    String    @id @default(cuid()) @map("_id")
+    accountId             String
+    providerId            String
+    userId                String
+    accessToken           String?
+    refreshToken          String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    expiresAt             Int?
+    idToken               String?
+    scope                 String?
+    tokenType             String?
+    sessionState          String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
     
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     
-    @@unique([provider, providerAccountId])
+    @@unique([providerId, accountId])
 }
 
 model Verification {

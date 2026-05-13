@@ -41,7 +41,7 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
             <div className="flex items-center gap-2">
               <Link href={`/user/${user?.id}`}>
                 <UserAvatar
-                  imageUrl={user?.image}
+                  imageUrl={user?.image || "https://github.com/shadcn.png"}
                   name={user?.name}
                   size="md"
                   className="h-7.5 w-7.5"

@@ -85,7 +85,7 @@ const SearchBox = ({
                   >
                     <div className="flex items-center gap-3">
                       <UserAvatar
-                        imageUrl={u.imageUrl || undefined}
+                        imageUrl={u.imageUrl || "https://github.com/shadcn.png"}
                         name={u.name}
                         size="sm"
                         className="w-7 h-7"

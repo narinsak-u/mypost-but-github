@@ -43,7 +43,9 @@ const WhoToFollow = () => {
                 className="flex min-w-0 items-center gap-3"
               >
                 <UserAvatar
-                  imageUrl={suggestion.imageUrl}
+                  imageUrl={
+                    suggestion.imageUrl || "https://github.com/shadcn.png"
+                  }
                   name={suggestion.name}
                   size="lg"
                   className="h-10 w-10 shrink-0"

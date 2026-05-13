@@ -46,7 +46,7 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
     <div className="flex items-center justify-start my-3 mx-6 ">
       <div>
         <UserAvatar
-          imageUrl={session?.user?.image}
+          imageUrl={session?.user?.image || "https://github.com/shadcn.png"}
           name={session?.user?.name ?? session?.user?.email}
           size="sm"
           className="w-6.25 h-6.25"

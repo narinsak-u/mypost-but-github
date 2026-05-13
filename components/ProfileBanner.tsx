@@ -55,7 +55,7 @@ export const ProfileBanner = ({
         <div className="flex items-center gap-5 w-full flex-col sm:flex-row">
           <div className="h-32 w-32 shrink-0 rounded-full border-4 border-[#0D1117] shadow-sm overflow-hidden">
             <UserAvatar
-              imageUrl={user?.imageUrl}
+              imageUrl={user?.imageUrl || "https://github.com/shadcn.png"}
               name={displayName}
               size="lg"
               className="h-full w-full"

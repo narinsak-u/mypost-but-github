@@ -182,7 +182,9 @@ const Nav = (props: Props) => {
             <DropdownMenuTrigger asChild>
               <button className="rounded-full overflow-hidden">
                 <UserAvatar
-                  imageUrl={session.user.image}
+                  imageUrl={
+                    session.user.image || "https://github.com/shadcn.png"
+                  }
                   name={session.user.name ?? session.user.email}
                   size="md"
                   className="h-8 w-8"

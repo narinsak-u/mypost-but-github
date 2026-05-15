@@ -57,19 +57,19 @@ const MessageThread = ({ conversationId }: MessageThreadProps) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full min-w-0 bg-background">
+    <div className="flex-1 flex flex-col h-full min-w-0 bg-[#1F1F1F]">
       {/* Header */}
-      <div className="p-4 border-b flex items-center gap-3 shrink-0">
+      <div className="p-4 border-b border-[#30363D] flex items-center gap-3 shrink-0 bg-[#1F1F1F]">
         <UserAvatar
           imageUrl={otherParticipant?.image}
           name={otherParticipant?.name}
           size="lg"
         />
         <div>
-          <h3 className="font-semibold truncate">
+          <h3 className="font-semibold truncate text-[#C9D1D9]">
             {otherParticipant?.name || "User"}
           </h3>
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-[10px] text-[#8B949E]">
             {otherParticipant?.email}
           </p>
         </div>

@@ -18,7 +18,7 @@ const ChatDialog = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      <DialogContent className="max-w-4xl h-[80vh] p-0 gap-0 overflow-hidden flex flex-col sm:flex-row">
+      <DialogContent className="max-w-3xl h-[80vh] p-0 gap-0 overflow-hidden flex flex-col sm:flex-row bg-[#1F1F1F] border-[#30363D] [&>button]:text-white [&>button]:opacity-100">
         <DialogHeader className="sr-only">
           <DialogTitle>Direct Messages</DialogTitle>
         </DialogHeader>
@@ -26,7 +26,7 @@ const ChatDialog = () => {
         {/* Sidebar - Conversation List */}
         <div
           className={cn(
-            "w-full sm:w-80 h-full shrink-0 border-r",
+            "w-full sm:w-72 h-full shrink-0 border-r border-[#30363D]",
             currentConversationId && "hidden sm:flex",
           )}
         >
@@ -48,7 +48,7 @@ const ChatDialog = () => {
                   variant="ghost"
                   size="icon"
                   onClick={() => open(null)}
-                  className="h-10 w-10 rounded-full bg-background/80 backdrop-blur-sm shadow-sm"
+                  className="h-10 w-10 rounded-full bg-[#1F1F1F]/80 backdrop-blur-sm shadow-sm border border-[#30363D] text-[#C9D1D9] hover:bg-[#262D34]"
                 >
                   <ChevronLeft className="h-6 w-6" />
                 </Button>
@@ -56,10 +56,10 @@ const ChatDialog = () => {
               <MessageThread conversationId={currentConversationId} />
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-              <div className="bg-muted rounded-full p-6 mb-4">
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-4 bg-[#1F1F1F]">
+              <div className="bg-[#262D34] rounded-full p-6 mb-4 border border-[#30363D]">
                 <svg
-                  className="w-12 h-12 text-muted-foreground"
+                  className="w-12 h-12 text-[#8B949E]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -73,8 +73,8 @@ const ChatDialog = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium">Select a message</h3>
-              <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+              <h3 className="text-lg font-medium text-[#C9D1D9]">Select a message</h3>
+              <p className="text-sm text-[#8B949E] max-w-xs mx-auto">
                 Choose from your existing conversations or start a new one to
                 begin chatting.
               </p>

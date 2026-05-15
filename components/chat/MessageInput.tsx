@@ -38,7 +38,7 @@ const MessageInput = ({ conversationId }: MessageInputProps) => {
   }, [content]);
 
   return (
-    <div className="p-4 border-t bg-background">
+    <div className="p-4 border-t border-[#30363D] bg-[#1F1F1F]">
       <div className="flex items-end gap-2 max-w-4xl mx-auto">
         <textarea
           ref={textareaRef}
@@ -47,14 +47,14 @@ const MessageInput = ({ conversationId }: MessageInputProps) => {
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Write a message..."
-          className="flex-1 min-h-10 max-h-32 p-2 rounded-lg border bg-muted focus:outline-none focus:ring-1 focus:ring-primary resize-none transition-all scrollbar-hide text-sm"
+          className="flex-1 min-h-10 max-h-32 p-2 rounded-lg border border-[#30363D] bg-[#161B22] text-[#C9D1D9] focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none transition-all scrollbar-hide text-sm placeholder:text-[#8B949E]"
           disabled={isPending}
         />
         <Button
           size="icon"
           disabled={!content.trim() || isPending}
           onClick={handleSend}
-          className="shrink-0"
+          className="shrink-0 bg-blue-700 hover:bg-blue-800 text-white"
         >
           <SendHorizonal className="h-5 w-5" />
         </Button>

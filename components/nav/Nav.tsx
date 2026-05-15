@@ -1,11 +1,9 @@
 "use client";
 
-import { Search, Sticker } from "lucide-react";
+import { Search, Sticker, User, Mail } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { LoginModal } from "@/components/auth/LoginModal";
-
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useGetUserList } from "@/hooks/use-get-user-list";
 import { searchPostsAutocomplete } from "@/actions/search-posts-atlas";
@@ -14,9 +12,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import useChatStore from "@/store/use-chat-store";
+import { useGetConversations } from "@/hooks/use-get-conversations";
+import { ConversationWithParticipants } from "@/types";
 
 type Props = {};
 
@@ -36,6 +39,21 @@ const Nav = (props: Props) => {
   const postSearchReqId = useRef(0);
 
   const { data: userList } = useGetUserList();
+  const openChat = useChatStore((state) => state.open);
+  const { data: conversations } = useGetConversations();
+
+  const hasUnread = useMemo(() => {
+    if (!session?.user?.id || !conversations) return false;
+    const conversationList = conversations as ConversationWithParticipants[];
+    return conversationList.some((conv) => {
+      const lastMessage = conv.messages[0];
+      return (
+        lastMessage &&
+        lastMessage.senderId !== session.user.id &&
+        !lastMessage.readAt
+      );
+    });
+  }, [conversations, session?.user?.id]);
 
   // memoize filtered users to avoid unnecessary re-renders
   const filteredUsers = useMemo(() => {
@@ -172,40 +190,66 @@ const Nav = (props: Props) => {
       />
 
       <div className="flex items-center text-white gap-3 ">
-        {session?.user && (
-          <Link
-            href={`/user/${session.user.id}`}
-            className="text-sm font-medium hidden sm:block"
-          >
-            {session.user.name ?? session.user.email}
-          </Link>
-        )}
-
         {session?.user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="rounded-full overflow-hidden">
-                <UserAvatar
-                  imageUrl={
-                    session.user.image || "https://github.com/shadcn.png"
-                  }
-                  name={session.user.name ?? session.user.email}
-                  size="md"
-                  className="h-8 w-8"
-                />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => {
-                  authClient.signOut();
-                  router.push("/");
-                }}
+          <>
+            <button
+              onClick={() => openChat()}
+              className="relative cursor-pointer p-2 rounded-full hover:bg-[#30363D] transition-colors"
+            >
+              <Mail size={20} className="text-[#8B949E]" />
+              {hasUnread && (
+                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full border-2 border-[#0D1117]" />
+              )}
+            </button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-full overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+                  <UserAvatar
+                    imageUrl={
+                      session.user.image || "https://github.com/shadcn.png"
+                    }
+                    name={session.user.name ?? session.user.email}
+                    size="md"
+                    className="h-8 w-8"
+                  />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-56 bg-[#1F1F1F] border-[#30363D]"
               >
-                Sign Out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none text-[#C9D1D9]">
+                      {session.user.name ?? "User"}
+                    </p>
+                    <p className="text-xs leading-none text-[#8B949E]">
+                      {session.user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-[#30363D]" />
+                <DropdownMenuItem
+                  onClick={() => router.push(`/user/${session.user.id}`)}
+                  className="text-[#C9D1D9] focus:bg-[#262D34] focus:text-white"
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-[#30363D]" />
+                <DropdownMenuItem
+                  onClick={() => {
+                    authClient.signOut();
+                    router.push("/");
+                  }}
+                  className="text-red-500 focus:text-red-500 focus:bg-[#262D34]"
+                >
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
         ) : (
           <LoginModal>
             <button className="w-32.5 h-8 cursor-pointer rounded-md bg-[#238636] text-white font-semibold">

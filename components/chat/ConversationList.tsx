@@ -32,7 +32,8 @@ const ConversationList = () => {
     );
   }
 
-  const conversationList = (conversations as ConversationWithParticipants[]) || [];
+  const conversationList =
+    (conversations as ConversationWithParticipants[]) || [];
 
   if (conversationList.length === 0) {
     return (
@@ -43,14 +44,14 @@ const ConversationList = () => {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto border-r">
-      <div className="p-4 border-b">
-        <h2 className="font-semibold text-lg">Messages</h2>
+    <div className="flex flex-col h-full overflow-y-auto w-full">
+      <div className="p-4 border-b border-[#30363D] bg-[#1F1F1F]">
+        <h2 className="font-semibold text-lg text-[#C9D1D9]">Messages</h2>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 bg-[#1F1F1F]">
         {conversationList.map((conversation) => {
           const otherParticipant = conversation.participants.find(
-            (p) => p.id !== currentUser?.id
+            (p) => p.id !== currentUser?.id,
           );
           const lastMessage = conversation.messages[0];
           const isActive = currentConversationId === conversation.id;
@@ -60,25 +61,30 @@ const ConversationList = () => {
               key={conversation.id}
               onClick={() => open(conversation.id)}
               className={cn(
-                "w-full flex items-center gap-3 p-3 transition-colors hover:bg-muted/50 text-left",
-                isActive && "bg-muted"
+                "w-full flex items-center gap-3 p-3 transition-colors hover:bg-[#262D34] text-left border-b border-[#30363D]/50",
+                isActive && "bg-[#21262D]",
               )}
             >
               <UserAvatar
-                imageUrl={otherParticipant?.image}
+                imageUrl={
+                  otherParticipant?.image || "https://github.com/shadcn.png"
+                }
                 name={otherParticipant?.name}
                 size="lg"
               />
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-baseline mb-1">
-                  <span className="font-medium truncate">
+                  <span className="font-medium truncate text-white">
                     {otherParticipant?.name || "User"}
                   </span>
                   {conversation.lastMessageAt && (
                     <span className="text-[10px] text-muted-foreground whitespace-nowrap">
-                      {formatDistanceToNow(new Date(conversation.lastMessageAt), {
-                        addSuffix: false,
-                      })}
+                      {formatDistanceToNow(
+                        new Date(conversation.lastMessageAt),
+                        {
+                          addSuffix: false,
+                        },
+                      )}
                     </span>
                   )}
                 </div>

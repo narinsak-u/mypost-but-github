@@ -1,28 +1,68 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import useChatStore from "@/store/use-chat-store";
 import ConversationList from "./ConversationList";
 import MessageThread from "./MessageThread";
 import { cn } from "@/lib/utils";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, X, Minus, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ChatDialog = () => {
-  const { isOpen, close, currentConversationId, open } = useChatStore();
+  const { isOpen, close, currentConversationId, open, isCollapsed, toggleCollapse } = useChatStore();
+
+  if (!isOpen) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      <DialogContent className="max-w-3xl h-[80vh] p-0 gap-0 overflow-hidden flex flex-col sm:flex-row bg-[#1F1F1F] border-[#30363D] [&>button]:text-white [&>button]:opacity-100">
-        <DialogHeader className="sr-only">
-          <DialogTitle>Direct Messages</DialogTitle>
-        </DialogHeader>
+    <div 
+      className={cn(
+        "fixed bottom-0 right-4 z-[50] flex flex-col bg-[#1F1F1F] border border-[#30363D] shadow-2xl transition-all duration-300 ease-in-out overflow-hidden rounded-t-xl",
+        isCollapsed ? "h-[48px] w-72" : "h-[500px] w-full max-w-[400px] sm:max-w-3xl"
+      )}
+    >
+      {/* Custom Header */}
+      <div 
+        className="h-[48px] px-4 flex items-center justify-between border-b border-[#30363D] bg-[#262D34] cursor-pointer"
+        onClick={() => isCollapsed && toggleCollapse()}
+      >
+        <div className="flex items-center gap-2 overflow-hidden">
+           {/* If collapsed and has conversation, show context (Option B) */}
+           {isCollapsed && currentConversationId ? (
+             <div className="flex items-center gap-2">
+               <div className="w-6 h-6 rounded-full bg-[#30363D]" />
+               <span className="text-sm font-medium text-[#C9D1D9] truncate">Conversation</span>
+             </div>
+           ) : (
+             <span className="text-sm font-medium text-[#C9D1D9]">Direct Messages</span>
+           )}
+        </div>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-[#8B949E] hover:text-white hover:bg-[#30363D]"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleCollapse();
+            }}
+          >
+            {isCollapsed ? <ChevronUp className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-[#8B949E] hover:text-white hover:bg-[#30363D]"
+            onClick={(e) => {
+              e.stopPropagation();
+              close();
+            }}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
 
+      {/* Main Content (Hidden when collapsed) */}
+      <div className={cn("flex-1 flex overflow-hidden", isCollapsed && "hidden")}>
         {/* Sidebar - Conversation List */}
         <div
           className={cn(
@@ -63,7 +103,6 @@ const ChatDialog = () => {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     strokeLinecap="round"
@@ -74,15 +113,11 @@ const ChatDialog = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-medium text-[#C9D1D9]">Select a message</h3>
-              <p className="text-sm text-[#8B949E] max-w-xs mx-auto">
-                Choose from your existing conversations or start a new one to
-                begin chatting.
-              </p>
             </div>
           )}
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 

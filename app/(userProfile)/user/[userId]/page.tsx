@@ -4,7 +4,7 @@ import Tabs from "@/components/Tabs";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { Suspense } from "react";
-import Skeleton from "@/components/Skeleton";
+import Skeleton from "@/components/OldSkeleton";
 import getUserStars from "@/actions/get-user-stars";
 import ProfileBanner from "@/components/ProfileBanner";
 import { UserProfileUser } from "@/types";

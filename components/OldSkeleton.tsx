@@ -2,7 +2,7 @@
 
 type Props = {}
 
-const Skeleton = (props: Props) => {
+const OldSkeleton = (props: Props) => {
   return (
     <div className='mt-10 dark'>
         <h3 className="h-4 bg-gray-200 rounded-md dark:bg-gray-700 w-[40%]"></h3>
@@ -17,4 +17,4 @@ const Skeleton = (props: Props) => {
   )
 }
 
-export default Skeleton
+export default OldSkeleton

@@ -4,7 +4,7 @@ import Feed from "@/components/Feed";
 import Tabs from "@/components/Tabs";
 import WhoToFollow from "@/components/WhoToFollow";
 import { Suspense } from "react";
-import Skeleton from "@/components/Skeleton";
+import Skeleton from "@/components/OldSkeleton";
 import type { Metadata } from "next";
 import { siteMetadata } from "@/site/siteMetadata";
 

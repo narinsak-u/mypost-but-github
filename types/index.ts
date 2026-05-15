@@ -62,5 +62,23 @@ export type UserProfileUser = {
   id: string;
 };
 
+export type ConversationWithParticipants = Prisma.ConversationGetPayload<{
+  include: {
+    participants: true;
+    messages: {
+      take: 1;
+      orderBy: {
+        createdAt: "desc";
+      };
+    };
+  };
+}>;
+
+export type MessageWithSender = Prisma.MessageGetPayload<{
+  include: {
+    sender: true;
+  };
+}>;
+
 export type FIRST_TAB = "For You" | "Overview";
 export type SECOND_TAB = "Following" | "Starred";

@@ -1,6 +1,6 @@
 "use client";
 
-import Skeleton from "./Skeleton";
+import Skeleton from "./OldSkeleton";
 import PostItem from "./posts/PostItem";
 import LoadMore from "./LoadMore";
 import { useGetPosts } from "@/hooks/use-get-posts";

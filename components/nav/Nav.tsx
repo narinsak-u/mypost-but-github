@@ -37,6 +37,7 @@ const Nav = (props: Props) => {
 
   const { data: userList } = useGetUserList();
 
+  // memoize filtered users to avoid unnecessary re-renders
   const filteredUsers = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
@@ -60,6 +61,7 @@ const Nav = (props: Props) => {
       .slice(0, 8);
   }, [query, userList]);
 
+  // "/" key down effect
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "/") return;
@@ -83,6 +85,7 @@ const Nav = (props: Props) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  // Focus the search input when the search dialog is opened
   useEffect(() => {
     if (!isSearchOpen) return;
 
@@ -90,6 +93,7 @@ const Nav = (props: Props) => {
     return () => window.clearTimeout(t);
   }, [isSearchOpen]);
 
+  // Search posts when the query is changed
   useEffect(() => {
     if (!isSearchOpen) return;
 

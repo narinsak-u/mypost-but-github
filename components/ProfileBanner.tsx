@@ -9,6 +9,8 @@ import { UserProfileUser } from "@/types";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { LoginModal } from "@/components/auth/LoginModal";
+import useChatStore from "@/store/use-chat-store";
+import { createConversation } from "@/actions/create-conversation";
 
 type Props = {
   isOwner: boolean;
@@ -31,6 +33,7 @@ export const ProfileBanner = ({
   const [isPending, startTransition] = useTransition();
   const [hasFollowed, setHasFollowed] = useState(isFollowing);
   const { data: session } = authClient.useSession();
+  const openChat = useChatStore((state) => state.open);
 
   const handleFollow = async () => {
     const { error, followed, success } = await toggleFollow(user.id);
@@ -39,6 +42,22 @@ export const ProfileBanner = ({
       router.refresh();
     } else {
       toast.error(error);
+    }
+  };
+
+  const handleMessage = async () => {
+    if (!session) return;
+
+    try {
+      const result = await createConversation(user.id);
+      if ("error" in result) {
+        toast.error(result.error);
+        return;
+      }
+
+      openChat(result.id);
+    } catch (error) {
+      toast.error("Failed to start conversation");
     }
   };
 
@@ -130,13 +149,28 @@ export const ProfileBanner = ({
                     </button>
                   </LoginModal>
                 )}
-                <a
-                  href={user.email ? `mailto:${user.email}` : undefined}
-                  className="h-9 sm:px-6 px-4 rounded-md cursor-pointer border border-[#30363D] bg-[#161B22] text-sm font-semibold text-[#C9D1D9] hover:bg-[#262D34] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] flex items-center gap-2"
-                >
-                  <Mail size={16} />
-                  Message
-                </a>
+
+                {/*TODO: Direct message - chat*/}
+                {session?.user ? (
+                  <button
+                    onClick={handleMessage}
+                    type="button"
+                    className="h-9 sm:px-6 px-4 rounded-md cursor-pointer border border-[#30363D] bg-[#161B22] text-sm font-semibold text-[#C9D1D9] hover:bg-[#262D34] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] flex items-center gap-2"
+                  >
+                    <Mail size={16} />
+                    Message
+                  </button>
+                ) : (
+                  <LoginModal>
+                    <button
+                      type="button"
+                      className="h-9 sm:px-6 px-4 rounded-md cursor-pointer border border-[#30363D] bg-[#161B22] text-sm font-semibold text-[#C9D1D9] hover:bg-[#262D34] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] flex items-center gap-2"
+                    >
+                      <Mail size={16} />
+                      Message
+                    </button>
+                  </LoginModal>
+                )}
               </div>
             )}
           </div>

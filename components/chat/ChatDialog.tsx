@@ -15,14 +15,22 @@ const ChatDialog = () => {
   return (
     <div 
       className={cn(
-        "fixed bottom-0 right-4 z-[50] flex flex-col bg-[#1F1F1F] border border-[#30363D] shadow-2xl transition-all duration-300 ease-in-out overflow-hidden rounded-t-xl",
+        "fixed bottom-0 right-0 sm:right-4 z-[50] flex flex-col bg-[#1F1F1F] border border-[#30363D] shadow-2xl transition-all duration-300 ease-in-out overflow-hidden rounded-t-xl",
         isCollapsed ? "h-[48px] w-72" : "h-[500px] w-full max-w-[400px] sm:max-w-3xl"
       )}
     >
       {/* Custom Header */}
       <div 
+        role="button"
+        tabIndex={0}
         className="h-[48px] px-4 flex items-center justify-between border-b border-[#30363D] bg-[#262D34] cursor-pointer"
         onClick={() => isCollapsed && toggleCollapse()}
+        onKeyDown={(e) => {
+          if (isCollapsed && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            toggleCollapse();
+          }
+        }}
       >
         <div className="flex items-center gap-2 overflow-hidden">
            {/* If collapsed and has conversation, show context (Option B) */}
@@ -81,9 +89,9 @@ const ChatDialog = () => {
           )}
         >
           {currentConversationId ? (
-            <div className="flex-1 flex flex-col relative h-full">
+            <div className="flex-1 flex flex-col relative h-full [&>div:last-child>div:first-child]:pl-14 sm:[&>div:last-child>div:first-child]:pl-4">
               {/* Mobile Back Button */}
-              <div className="sm:hidden absolute top-4 left-4 z-10">
+              <div className="sm:hidden absolute top-3 left-2 z-10">
                 <Button
                   variant="ghost"
                   size="icon"

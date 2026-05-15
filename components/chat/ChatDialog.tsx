@@ -23,10 +23,12 @@ const ChatDialog = () => {
       <div 
         role="button"
         tabIndex={0}
+        aria-expanded={!isCollapsed}
+        aria-label={isCollapsed ? "Expand chat" : "Collapse chat"}
         className="h-[48px] px-4 flex items-center justify-between border-b border-[#30363D] bg-[#262D34] cursor-pointer"
-        onClick={() => isCollapsed && toggleCollapse()}
+        onClick={() => toggleCollapse()}
         onKeyDown={(e) => {
-          if (isCollapsed && (e.key === "Enter" || e.key === " ")) {
+          if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             toggleCollapse();
           }

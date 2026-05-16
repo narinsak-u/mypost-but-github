@@ -56,7 +56,7 @@ const MessageInput = ({ conversationId }: MessageInputProps) => {
           onClick={handleSend}
           className="shrink-0 bg-blue-700 hover:bg-blue-800 text-white"
         >
-          <SendHorizonal className="h-5 w-5" />
+          <SendHorizonal className="size-5" />
         </Button>
       </div>
     </div>

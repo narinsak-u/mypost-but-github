@@ -48,7 +48,7 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
                   imageUrl={user?.image ?? "https://github.com/shadcn.png"}
                   name={user?.name ?? ""}
                   size="md"
-                  className="h-7.5 w-7.5"
+                  className="size-7.5"
                 />
               </Link>
               <div className="flex flex-col">

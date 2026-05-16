@@ -27,7 +27,7 @@ const CommentItem = ({ comment, post }: Props) => {
             imageUrl={user?.image}
             name={user?.name}
             size="sm"
-            className="w-6.25 h-6.25"
+            className="size-6.25"
           />
         </Link>
         <div className="flex bg-[#30363E] w-full py-1 px-3 flex-col ml-4 border border-[#444C56] rounded-sm">

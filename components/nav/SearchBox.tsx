@@ -42,7 +42,7 @@ const SearchBox = ({
   searchInputRef,
   postResults,
 }: Props) => {
-  const router = useRouter();
+  const { push } = useRouter();
 
   return (
     <CommandDialog
@@ -63,7 +63,7 @@ const SearchBox = ({
       <CommandList>
         <CommandEmpty>
           {isSearchingPosts
-            ? "Searching..."
+            ? "Searching…"
             : query.trim()
               ? "No results found."
               : "Type to search."}
@@ -80,7 +80,7 @@ const SearchBox = ({
                     className="aria-selected:bg-[#1F6FEB]/20 aria-selected:text-[#C9D1D9]"
                     onSelect={() => {
                       closeSearch();
-                      router.push(`/user/${u.id}`);
+                      push(`/user/${u.id}`);
                     }}
                   >
                     <div className="flex items-center gap-3">
@@ -88,7 +88,7 @@ const SearchBox = ({
                         imageUrl={u.imageUrl || "https://github.com/shadcn.png"}
                         name={u.name}
                         size="sm"
-                        className="w-7 h-7"
+                        className="size-7"
                       />
                       <div className="flex flex-col">
                         <span className="text-sm text-[#C9D1D9]">{u.name}</span>
@@ -112,7 +112,7 @@ const SearchBox = ({
             {isSearchingPosts ? (
               <CommandGroup heading="Posts">
                 <CommandItem disabled value="Searching posts">
-                  Searching...
+                  Searching…
                 </CommandItem>
               </CommandGroup>
             ) : postResults.length ? (
@@ -132,7 +132,7 @@ const SearchBox = ({
                       className="aria-selected:bg-[#1F6FEB]/20 aria-selected:text-[#C9D1D9]"
                       onSelect={() => {
                         closeSearch();
-                        router.push(`/post/${p.id}`);
+                        push(`/post/${p.id}`);
                       }}
                     >
                       <div className="flex flex-col">

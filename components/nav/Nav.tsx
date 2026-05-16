@@ -29,7 +29,7 @@ export type PostSearchResult = Awaited<
 
 const Nav = (props: Props) => {
   const { data: session } = authClient.useSession();
-  const router = useRouter();
+  const { push } = useRouter();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -164,11 +164,11 @@ const Nav = (props: Props) => {
         role="button"
         tabIndex={0}
         className="text-lg text-white cursor-pointer flex items-center gap-2"
-        onClick={() => router.push("/")}
+        onClick={() => push("/")}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            router.push("/");
+            push("/");
           }
         }}
       >
@@ -214,7 +214,7 @@ const Nav = (props: Props) => {
             >
               <Mail size={20} className="text-[#8B949E]" />
               {hasUnread && (
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full border-2 border-[#0D1117]" />
+                <span className="absolute top-1.5 right-1.5 size-2 bg-red-500 rounded-full border-2 border-[#0D1117]" />
               )}
             </button>
 
@@ -227,7 +227,7 @@ const Nav = (props: Props) => {
                     }
                     name={session.user.name ?? session.user.email}
                     size="md"
-                    className="h-8 w-8"
+                    className="size-8"
                   />
                 </button>
               </DropdownMenuTrigger>
@@ -236,7 +236,7 @@ const Nav = (props: Props) => {
                 className="w-56 bg-[#1F1F1F] border-[#30363D]"
               >
                 <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
+                  <div className="flex flex-col gap-y-1">
                     <p className="text-sm font-medium leading-none text-[#C9D1D9]">
                       {session.user.name ?? "User"}
                     </p>
@@ -247,17 +247,17 @@ const Nav = (props: Props) => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-[#30363D]" />
                 <DropdownMenuItem
-                  onClick={() => router.push(`/user/${session.user.id}`)}
+                  onClick={() => push(`/user/${session.user.id}`)}
                   className="text-[#C9D1D9] focus:bg-[#262D34] focus:text-white"
                 >
-                  <User className="mr-2 h-4 w-4" />
+                  <User className="mr-2 size-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-[#30363D]" />
                 <DropdownMenuItem
                   onClick={() => {
                     authClient.signOut();
-                    router.push("/");
+                    push("/");
                   }}
                   className="text-red-500 focus:text-red-500 focus:bg-[#262D34]"
                 >

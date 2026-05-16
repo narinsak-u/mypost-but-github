@@ -39,7 +39,7 @@ const ChatDialog = () => {
           {/* If collapsed and has conversation, show context (Option B) */}
           {isCollapsed && currentConversationId ? (
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-[#30363D]" />
+              <div className="size-6 rounded-full bg-[#30363D]" />
               <span className="text-sm font-medium text-[#C9D1D9] truncate">
                 Conversation
               </span>
@@ -54,28 +54,28 @@ const ChatDialog = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-[#8B949E] hover:text-white hover:bg-[#30363D]"
+            className="size-8 text-[#8B949E] hover:text-white hover:bg-[#30363D]"
             onClick={(e) => {
               e.stopPropagation();
               toggleCollapse();
             }}
           >
             {isCollapsed ? (
-              <ChevronUp className="h-4 w-4" />
+              <ChevronUp className="size-4" />
             ) : (
-              <Minus className="h-4 w-4" />
+              <Minus className="size-4" />
             )}
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-[#8B949E] hover:text-white hover:bg-[#30363D]"
+            className="size-8 text-[#8B949E] hover:text-white hover:bg-[#30363D]"
             onClick={(e) => {
               e.stopPropagation();
               close();
             }}
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </Button>
         </div>
       </button>
@@ -88,7 +88,9 @@ const ChatDialog = () => {
         <div
           className={cn(
             "w-full sm:w-72 h-full shrink-0 border-r border-[#30363D] transition-transform duration-300",
-            currentConversationId ? "-translate-x-full sm:translate-x-0 absolute sm:relative invisible sm:visible" : "translate-x-0 relative",
+            currentConversationId
+              ? "-translate-x-full sm:translate-x-0 absolute sm:relative invisible sm:visible"
+              : "translate-x-0 relative",
           )}
         >
           <ConversationList />
@@ -98,7 +100,9 @@ const ChatDialog = () => {
         <div
           className={cn(
             "flex-1 h-full min-w-0 flex flex-col transition-transform duration-300",
-            currentConversationId ? "translate-x-0 relative" : "translate-x-full sm:translate-x-0 absolute sm:relative invisible sm:visible",
+            currentConversationId
+              ? "translate-x-0 relative"
+              : "translate-x-full sm:translate-x-0 absolute sm:relative invisible sm:visible",
           )}
         >
           {currentConversationId ? (
@@ -109,9 +113,9 @@ const ChatDialog = () => {
                   variant="ghost"
                   size="icon"
                   onClick={() => open(null)}
-                  className="h-11 w-11 rounded-full bg-[#1F1F1F]/90 backdrop-blur-md shadow-lg border border-[#30363D] text-[#C9D1D9] hover:bg-[#262D34] active:scale-95 transition-all"
+                  className="size-11 rounded-full bg-[#1F1F1F]/90 backdrop-blur-md shadow-lg border border-[#30363D] text-[#C9D1D9] hover:bg-[#262D34] active:scale-95 transition-all"
                 >
-                  <ChevronLeft className="h-7 w-7" />
+                  <ChevronLeft className="size-7" />
                 </Button>
               </div>
               <MessageThread conversationId={currentConversationId} />
@@ -120,7 +124,7 @@ const ChatDialog = () => {
             <div className="flex-1 flex flex-col items-center justify-center text-center p-4 bg-[#1F1F1F]">
               <div className="bg-[#262D34] rounded-full p-6 mb-4 border border-[#30363D]">
                 <svg
-                  className="w-12 h-12 text-[#8B949E]"
+                  className="size-12 text-[#8B949E]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

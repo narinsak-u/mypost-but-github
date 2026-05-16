@@ -21,11 +21,12 @@ type Props = {
 
 const UserProfileContent = async ({ params }: Props) => {
   const { userId } = await params;
-  const stars = await getUserStars(userId);
 
-  const user = await db.user.findUnique({
-    where: { id: userId },
-  });
+  const [stars, user, session] = await Promise.all([
+    getUserStars(userId),
+    db.user.findUnique({ where: { id: userId } }),
+    auth.api.getSession({ headers: await headers() }),
+  ]);
 
   if (!user) {
     return <div>User not found</div>;
@@ -38,9 +39,6 @@ const UserProfileContent = async ({ params }: Props) => {
       getIsFollowing(userId),
     ]);
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
   const currentUserId = session?.user?.id;
   const isOwner = currentUserId === userId;
 

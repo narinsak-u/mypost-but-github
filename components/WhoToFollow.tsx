@@ -42,7 +42,7 @@ const WhoToFollow = () => {
                   }
                   name={suggestion.name}
                   size="lg"
-                  className="h-10 w-10 shrink-0"
+                  className="size-10 shrink-0"
                 />
                 <div className="min-w-0">
                   <div className="truncate text-sm font-semibold text-white">

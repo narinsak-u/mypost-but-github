@@ -146,7 +146,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            setSelected({ ...selected, comment: !selected.comment });
+            setSelected((prev) => ({ ...prev, comment: !prev.comment }));
           }
         }}
       >

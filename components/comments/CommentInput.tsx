@@ -14,7 +14,7 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
   const [isPending, startTransition] = useTransition();
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
-  const router = useRouter();
+  const { refresh } = useRouter();
 
   const { validatePostQueries } = useValidateQuery();
 
@@ -33,7 +33,7 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
           ...post,
           comments: [...post.comments, comment],
         });
-        router.refresh();
+        refresh();
       }
     } catch (error) {
       console.log(error);
@@ -49,7 +49,7 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
           imageUrl={session?.user?.image || "https://github.com/shadcn.png"}
           name={session?.user?.name ?? session?.user?.email}
           size="sm"
-          className="w-6.25 h-6.25"
+          className="size-6.25"
         />
       </div>
       <Input

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
 import useSavedTab from "@/store/use-saved-tab";
@@ -17,6 +18,11 @@ const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
   const { tab, setTab } = useSavedTab();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const showSecondTab =
     Boolean(secondTab) && (isProfile ? owner === userId : Boolean(userId));
@@ -51,7 +57,7 @@ const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
           <span>{firstTab}</span>
         </button>
 
-        {showSecondTab && (
+        {isMounted && showSecondTab && (
           <button
             type="button"
             role="tab"

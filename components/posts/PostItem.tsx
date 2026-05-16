@@ -8,7 +8,6 @@ import ReactionButton from "./ReactionButton";
 import CommentSection from "../comments/CommentSection";
 import OptionMenu from "../OptionMenu";
 import { PostPopulated } from "@/types";
-import { useGetUser } from "@/hooks/use-get-user";
 import { useParseContent } from "@/hooks/use-parse-content";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -30,8 +29,8 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: Boolean(!isSuggestion && isPost),
   });
-  const router = useRouter();
-  const { data: user, isFetching } = useGetUser({ userId: post.userId });
+  const { push } = useRouter();
+  const user = isSuggestion ? null : post.user;
   const rawBody = useParseContent(post.body!);
   const sanitizedBody = useMemo(
     () => (rawBody ? DOMPurify.sanitize(rawBody) : ""),
@@ -46,8 +45,8 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
             <div className="flex items-center gap-2">
               <Link href={`/user/${user?.id}`}>
                 <UserAvatar
-                  imageUrl={user?.image || "https://github.com/shadcn.png"}
-                  name={user?.name}
+                  imageUrl={user?.image ?? "https://github.com/shadcn.png"}
+                  name={user?.name ?? ""}
                   size="md"
                   className="h-7.5 w-7.5"
                 />
@@ -55,7 +54,7 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
               <div className="flex flex-col">
                 <div className="text-sm">
                   <Link className="hover:underline" href={`/user/${user?.id}`}>
-                    {`${user?.name}`}
+                    {user?.name ?? ""}
                   </Link>
                   <span className="text-[#ADBAC7] px-1">posted</span>
                   <Link className="hover:underline" href={`/post/${post.id}`}>
@@ -63,7 +62,7 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
                   </Link>
                 </div>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <span>
+                  <span suppressHydrationWarning>
                     {formatDistanceToNow(new Date(post.createdAt))} ago
                   </span>
                 </div>
@@ -82,8 +81,16 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
           )}
         >
           <div
+            role="button"
+            tabIndex={0}
             className={"cursor-pointer"}
-            onClick={() => router.push(`/post/${post.id}`)}
+            onClick={() => push(`/post/${post.id}`)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                push(`/post/${post.id}`);
+              }
+            }}
           >
             <div className="flex justify-between items-center">
               <div
@@ -95,10 +102,12 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
                 {post.title}
               </div>
             </div>
+            {/* Sanitized via DOMPurify above - safe to render */}
             <div
               className={cn(
                 isSuggestion && "text-xs text-[#ADBAC7] line-clamp-2 mt-2",
               )}
+              // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: sanitizedBody }}
             />
             {!isSuggestion && (

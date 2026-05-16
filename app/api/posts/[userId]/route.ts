@@ -5,7 +5,7 @@ import { z } from "zod";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ userId: string }> }
+  { params }: { params: Promise<{ userId: string }> },
 ) {
   const url = new URL(request.url);
   const { userId } = await params;
@@ -37,6 +37,7 @@ export async function GET(
         createdAt: "desc",
       },
       include: {
+        user: true,
         comments: {
           include: {
             post: {

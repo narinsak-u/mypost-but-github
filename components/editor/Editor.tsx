@@ -49,11 +49,13 @@ const getMentionMenuItems = (
   }));
 };
 
+const EMPTY_USERS: string[] = [];
+
 const Editor = ({
   onChange = () => {},
   editable,
   initialContent,
-  users = [],
+  users = EMPTY_USERS,
 }: Props) => {
   const editor = useCreateBlockNote({ schema });
 

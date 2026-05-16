@@ -5,7 +5,6 @@ import { authClient } from "@/lib/auth-client";
 import useSavedTab from "@/store/use-saved-tab";
 import { Compass, SquareKanban, Star, Users } from "lucide-react";
 import { FIRST_TAB, SECOND_TAB } from "@/types";
-import { useEffect } from "react";
 
 type Props = {
   firstTab: FIRST_TAB;
@@ -18,18 +17,9 @@ const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
   const { tab, setTab } = useSavedTab();
+
   const showSecondTab =
     Boolean(secondTab) && (isProfile ? owner === userId : Boolean(userId));
-
-  useEffect(() => {
-    setTab(firstTab);
-  }, [firstTab, setTab]);
-
-  useEffect(() => {
-    if (!showSecondTab) {
-      setTab(firstTab);
-    }
-  }, [firstTab, setTab, showSecondTab]);
 
   const isFirstSelected = tab === firstTab || !tab;
   const isSecondSelected = Boolean(secondTab) && tab === secondTab;

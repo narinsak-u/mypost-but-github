@@ -79,11 +79,12 @@ const Nav = (props: Props) => {
           imageUrl: u.image || "",
         };
       })
-      .filter((u) => u.id && u.name);
+      .filter(
+        (u) =>
+          u.id && u.name && `${u.name} ${u.handle}`.toLowerCase().includes(q),
+      );
 
-    return users
-      .filter((u) => `${u.name} ${u.handle}`.toLowerCase().includes(q))
-      .slice(0, 8);
+    return users.slice(0, 8);
   }, [query, userList]);
 
   // "/" key down effect
@@ -160,8 +161,16 @@ const Nav = (props: Props) => {
   return (
     <div className="h-16.25 mb-12 border-b border-[#30363D] flex justify-between items-center px-5 md:px-0 gap-2 ">
       <div
+        role="button"
+        tabIndex={0}
         className="text-lg text-white cursor-pointer flex items-center gap-2"
         onClick={() => router.push("/")}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            router.push("/");
+          }
+        }}
       >
         <Sticker size={24} />
         <div className="text-md font-semibold hidden md:block">
@@ -177,7 +186,7 @@ const Nav = (props: Props) => {
       >
         <Search size={16} className="shrink-0 text-[#8B949E]" />
         <span className="flex-1 min-w-0 text-left text-sm text-[#8B949E] truncate">
-          Search users, posts...
+          Search users, posts…
         </span>
         <kbd className="shrink-0 px-2 py-0.5 text-xs text-[#8B949E] bg-[#161B22] border border-[#30363D] rounded-sm">
           /

@@ -50,7 +50,15 @@ const Toolbar = ({ title, preview, setTitle }: Props) => {
         />
       ) : (
         <div
+          role="button"
+          tabIndex={0}
           onClick={enableInput}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              enableInput();
+            }
+          }}
           className="pb-[11.5px] sm:text-5xl text-3xl font-bold wrap-break-word outline-none text-[#CFCFCF]"
         >
           {title}

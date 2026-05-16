@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
         createdAt: "desc",
       },
       include: {
+        user: true,
         comments: {
           include: {
             post: {

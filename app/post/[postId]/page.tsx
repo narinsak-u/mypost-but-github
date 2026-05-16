@@ -7,18 +7,25 @@ import { db } from "@/lib/prismadb";
 const PostPage = async ({
   params,
 }: {
-  params: Promise<{ postId: string }>
+  params: Promise<{ postId: string }>;
 }) => {
   const { postId } = await params;
   const post = (await getPostById(postId)) as PostPopulated;
-  const posts = await db.post.findMany({});
+  const posts = await db.post.findMany({
+    include: {
+      user: true,
+      comments: true,
+    },
+  });
   const relatedPosts = posts.filter((p) => p.id !== postId).slice(0, 3);
 
   return (
     <>
       <div className="h-full w-full px-5 md:px-0 rounded-sm">
         <div className="flex items-center gap-2 text-sm text-[#8B949E]">
-          <Link href="/" className="hover:text-[#ADBAC7]">Home</Link>
+          <Link href="/" className="hover:text-[#ADBAC7]">
+            Home
+          </Link>
           <div>/</div>
           <div className="text-[#ADBAC7] font-medium">{post.title}</div>
         </div>

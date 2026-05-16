@@ -1,7 +1,10 @@
 "use client";
 
 import { useGetConversations } from "@/hooks/use-get-conversations";
-import { useChatCurrentConversationId, useChatActions } from "@/store/use-chat-store";
+import {
+  useChatCurrentConversationId,
+  useChatActions,
+} from "@/store/use-chat-store";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -21,7 +24,10 @@ const ConversationList = () => {
     return (
       <div className="flex flex-col gap-2 p-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="flex items-center gap-3 p-2">
+          <div
+            key={`conv-skeleton-${i}`}
+            className="flex items-center gap-3 p-2"
+          >
             <Skeleton className="h-10 w-10 rounded-full" />
             <div className="flex-1 space-y-2">
               <Skeleton className="h-4 w-[60%]" />
@@ -79,7 +85,10 @@ const ConversationList = () => {
                     {otherParticipant?.name || "User"}
                   </span>
                   {conversation.lastMessageAt && (
-                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                    <span
+                      className="text-[10px] text-muted-foreground whitespace-nowrap"
+                      suppressHydrationWarning
+                    >
                       {formatDistanceToNow(
                         new Date(conversation.lastMessageAt),
                         {

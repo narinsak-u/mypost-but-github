@@ -2,7 +2,7 @@
 
 import { Calendar, Mail, Star, UserPlus, Users2 } from "lucide-react";
 import { UserAvatar } from "@/components/ui/user-avatar";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { toast } from "sonner";
 import { toggleFollow } from "@/actions/follow-actions";
 import { UserProfileUser } from "@/types";
@@ -29,16 +29,14 @@ export const ProfileBanner = ({
   followingCount,
   isFollowing,
 }: Props) => {
-  const router = useRouter();
+  const { refresh } = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [hasFollowed, setHasFollowed] = useState(isFollowing);
   const { data: session } = authClient.useSession();
   const { open: openChat } = useChatActions();
 
   const handleFollow = async () => {
     const { error, followed, success } = await toggleFollow(user.id);
     if (!error && followed !== undefined) {
-      setHasFollowed(followed);
       router.refresh();
     } else {
       toast.error(error);
@@ -135,7 +133,7 @@ export const ProfileBanner = ({
                     className="h-9 sm:px-6 px-4 rounded-md cursor-pointer bg-green-600 hover:bg-green-500 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] flex items-center gap-2"
                   >
                     <UserPlus size={16} />
-                    {hasFollowed ? "Unfollow" : "Follow"}
+                    {isFollowing ? "Unfollow" : "Follow"}
                   </button>
                 ) : (
                   <LoginModal>

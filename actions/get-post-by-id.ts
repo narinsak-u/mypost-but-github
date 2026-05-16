@@ -9,6 +9,7 @@ const getPostById = async (postId: string) => {
         id: postId,
       },
       include: {
+        user: true,
         comments: true,
       },
     });

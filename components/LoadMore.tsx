@@ -12,11 +12,19 @@ type Props = {
 const LoadMore = ({ loadNextPost, hasNextPage, isFetchingNextPage }: Props) => {
   return (
     <div
+      role="button"
+      tabIndex={0}
       className={cn(
         `flex items-center border justify-center p-2 my-12  border-[#444C56] rounded-sm`,
-        isFetchingNextPage ? "cursor-not-allowed" : "cursor-pointer"
+        isFetchingNextPage ? "cursor-not-allowed" : "cursor-pointer",
       )}
       onClick={loadNextPost}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          loadNextPost();
+        }
+      }}
     >
       {/* {!isFetchingNextPage && <Rocket size={20} className="mr-2" />} */}
       <div className="text-xs font-semibold text-[#006EED] hover:text-sky-700">

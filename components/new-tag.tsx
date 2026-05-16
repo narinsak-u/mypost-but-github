@@ -28,7 +28,7 @@ const NewTag = ({ selectedTag, setSelectedtag }: Props) => {
   const [open, setOpen] = React.useState(false);
 
   return (
-    <div className="flex items-center space-x-4 my-8 ms-[54px]">
+    <div className="flex items-center gap-x-4 my-8 ms-[54px]">
       <p className="text-sm text-muted-foreground">Add tag</p>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -54,8 +54,8 @@ const NewTag = ({ selectedTag, setSelectedtag }: Props) => {
                     onSelect={(value) => {
                       setSelectedtag(
                         TagOptions.find(
-                          (priority) => priority.value === value
-                        ) || null
+                          (priority) => priority.value === value,
+                        ) || null,
                       );
                       setOpen(false);
                     }}

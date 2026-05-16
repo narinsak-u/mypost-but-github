@@ -31,9 +31,12 @@ const UserProfileContent = async ({ params }: Props) => {
     return <div>User not found</div>;
   }
 
-  const { followersCount } = await getUserFollowers(userId);
-  const { followingCount } = await getUserFollowing(userId);
-  const { isFollowing } = await getIsFollowing(userId);
+  const [{ followersCount }, { followingCount }, { isFollowing }] =
+    await Promise.all([
+      getUserFollowers(userId),
+      getUserFollowing(userId),
+      getIsFollowing(userId),
+    ]);
 
   const session = await auth.api.getSession({
     headers: await headers(),

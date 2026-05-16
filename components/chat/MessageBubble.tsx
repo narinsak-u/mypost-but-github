@@ -31,6 +31,7 @@ const MessageBubble = ({ message, isOwn }: MessageBubbleProps) => {
             "text-[10px] mt-1 opacity-60",
             isOwn ? "text-blue-100 text-right" : "text-[#8B949E] text-left",
           )}
+          suppressHydrationWarning
         >
           {format(new Date(message.createdAt), "HH:mm")}
         </div>

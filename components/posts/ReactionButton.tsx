@@ -22,7 +22,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
   const [hasStarred, setHasStarred] = useState<boolean>(false);
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
-  const router = useRouter();
+  const { refresh } = useRouter();
   const { validatePostQueries } = useValidateQuery();
   const [isPending, startTransition] = useTransition();
 
@@ -44,7 +44,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
 
     setHasLiked(res.hasLiked);
     await validatePostQueries(updatedPost);
-    router.refresh();
+    refresh();
   };
 
   const handleStar = async () => {
@@ -65,7 +65,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
 
     setHasStarred(res.hasStarred);
     await validatePostQueries(updatedPost);
-    router.refresh();
+    refresh();
   };
 
   useEffect(() => {
@@ -79,7 +79,17 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
       {/* LIKE */}
       <div className="flex items-center cursor-pointer bg-transparent hover:opacity-70">
         {userId ? (
-          <div onClick={() => startTransition(handleLike)}>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => startTransition(handleLike)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                startTransition(handleLike);
+              }
+            }}
+          >
             {hasLiked ? (
               <div className="flex gap-2 items-center">
                 <Heart size={18} fill="#006EED" />
@@ -127,8 +137,18 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
 
       {/* COMMENT */}
       <div
+        role="button"
+        tabIndex={0}
         className="flex items-center gap-1 bg-transparent cursor-pointer hover:opacity-70 border-none"
-        onClick={() => setSelected({ ...selected, comment: !selected.comment })}
+        onClick={() =>
+          setSelected((prev) => ({ ...prev, comment: !prev.comment }))
+        }
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setSelected({ ...selected, comment: !selected.comment });
+          }
+        }}
       >
         {selected && selected.comment ? (
           <MessagesSquare size={18} fill="#006EED" />
@@ -148,7 +168,17 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
       {/* STAR */}
       <div className="flex gap-1 items-center hover:opacity-70 justify-center bg-transparent cursor-pointer">
         {userId ? (
-          <div onClick={() => startTransition(handleStar)}>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => startTransition(handleStar)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                startTransition(handleStar);
+              }
+            }}
+          >
             {hasStarred ? (
               <div className="text-sm font-semibold flex gap-1 items-center">
                 <Star size={18} fill="#006EED" />

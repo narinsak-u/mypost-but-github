@@ -55,6 +55,7 @@ export async function GET(request: Request) {
         createdAt: "desc",
       },
       include: {
+        user: true,
         comments: {
           include: {
             post: {

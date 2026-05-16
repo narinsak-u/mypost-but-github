@@ -39,7 +39,7 @@ const CommentItem = ({ comment, post }: Props) => {
               >
                 {user?.name ?? "User"}
               </Link>
-              <span className="text-[#8B949E]">
+              <span className="text-[#8B949E]" suppressHydrationWarning>
                 · {formatDistanceToNow(new Date(comment.createdAt))} ago
               </span>
             </div>

@@ -141,7 +141,7 @@ export const toggleLike = async (postId: string): Promise<ToggleLikeResult> => {
     revalidatePath("/");
     return { hasLiked: !currentlyLiked };
   } catch (error) {
-    console.log(error);
+    console.error("toggleLike error:", error);
     return { error: "Internal server error" };
   }
 };
@@ -187,7 +187,7 @@ export const toggleStar = async (postId: string): Promise<ToggleStarResult> => {
     revalidatePath("/");
     return { hasStarred: !currentlyStarred };
   } catch (error) {
-    console.log(error);
+    console.error("toggleStar error:", error);
     return { error: "Internal server error" };
   }
 };

@@ -1,9 +1,9 @@
 # Implementation Plan: Enhance Chat UI/UX and stability
 
 ## Phase 1: Foundation & Stability
-- [ ] Task: Refactor Chat Store for Performance
-    - [ ] Update `use-chat-store.ts` to support atomic selectors.
-    - [ ] Verify no regressions in `ChatDialog.tsx`.
+- [x] Task: Refactor Chat Store for Performance afb4260
+    - [x] Update `use-chat-store.ts` to support atomic selectors.
+    - [x] Verify no regressions in `ChatDialog.tsx`.
 - [ ] Task: Unit Testing for Chat Actions
     - [ ] Write tests for `send-message.ts`.
     - [ ] Write tests for `get-messages.ts`.

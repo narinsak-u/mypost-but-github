@@ -253,7 +253,7 @@ const Nav = (props: Props) => {
         ) : (
           <LoginModal>
             <button className="w-32.5 h-8 cursor-pointer rounded-md bg-[#238636] text-white font-semibold">
-              Join Us ✌️🎉
+              Join Now
             </button>
           </LoginModal>
         )}

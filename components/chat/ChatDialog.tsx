@@ -8,14 +8,12 @@ import { ChevronLeft, X, Minus, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ChatDialog = () => {
-  const {
-    isOpen,
-    close,
-    currentConversationId,
-    open,
-    isCollapsed,
-    toggleCollapse,
-  } = useChatStore();
+  const isOpen = useChatStore((state) => state.isOpen);
+  const isCollapsed = useChatStore((state) => state.isCollapsed);
+  const currentConversationId = useChatStore((state) => state.currentConversationId);
+  const close = useChatStore((state) => state.close);
+  const open = useChatStore((state) => state.open);
+  const toggleCollapse = useChatStore((state) => state.toggleCollapse);
 
   if (!isOpen) return null;
 

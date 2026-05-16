@@ -12,7 +12,8 @@ import { ConversationWithParticipants } from "@/types";
 const ConversationList = () => {
   const { data: session } = authClient.useSession();
   const { data: conversations, isLoading } = useGetConversations();
-  const { currentConversationId, open } = useChatStore();
+  const currentConversationId = useChatStore((state) => state.currentConversationId);
+  const open = useChatStore((state) => state.open);
 
   const currentUser = session?.user;
 

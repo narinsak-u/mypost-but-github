@@ -5,10 +5,10 @@ import { useGetMessages } from "@/hooks/use-get-messages";
 import { authClient } from "@/lib/auth-client";
 import MessageBubble from "./MessageBubble";
 import MessageInput from "./MessageInput";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
+import { MessageSkeleton } from "./MessageSkeleton";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useGetConversations } from "@/hooks/use-get-conversations";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
 
 interface MessageThreadProps {
   conversationId: string;
@@ -29,32 +29,18 @@ const MessageThread = ({ conversationId }: MessageThreadProps) => {
     (p: any) => p.id !== currentUser?.id,
   );
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
+  const messageList = (messages && !("error" in messages) ? messages : []) as any[];
+
+  useChatScroll({
+    chatRef: scrollRef,
+    count: messageList.length,
+    shouldScroll: true,
+  });
 
   if (isLoading) {
-    return (
-      <div className="flex-1 flex flex-col">
-        <div className="p-4 border-b flex items-center gap-3">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <Skeleton className="h-4 w-32" />
-        </div>
-        <div className="flex-1 p-4 space-y-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}
-            >
-              <Skeleton className="h-10 w-[60%] rounded-2xl" />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <MessageSkeleton />;
   }
+
 
   return (
     <div className="flex-1 flex flex-col h-full min-w-0 bg-[#1F1F1F]">
@@ -76,10 +62,13 @@ const MessageThread = ({ conversationId }: MessageThreadProps) => {
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
-        <div ref={scrollRef} className="flex flex-col">
-          {messages && !("error" in messages) && messages.length > 0 ? (
-            messages.map((message: any) => (
+      <div 
+        ref={scrollRef} 
+        className="flex-1 p-4 overflow-y-auto"
+      >
+        <div className="flex flex-col">
+          {messageList.length > 0 ? (
+            messageList.map((message: any) => (
               <MessageBubble
                 key={message.id}
                 message={message}
@@ -87,7 +76,7 @@ const MessageThread = ({ conversationId }: MessageThreadProps) => {
               />
             ))
           ) : (
-            <div className="flex flex-col items-center justify-center h-full py-10 text-center text-muted-foreground">
+            <div className="flex flex-col items-center justify-center h-full py-10 text-center text-[#8B949E]">
               <p className="text-sm">No messages yet.</p>
               <p className="text-xs">
                 Send a message to start the conversation!
@@ -95,7 +84,7 @@ const MessageThread = ({ conversationId }: MessageThreadProps) => {
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Input */}
       <MessageInput conversationId={conversationId} />

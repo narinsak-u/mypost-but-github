@@ -1,13 +1,13 @@
 # Implementation Plan: Enhance Chat UI/UX and stability
 
-## Phase 1: Foundation & Stability
+## Phase 1: Foundation & Stability [checkpoint: 841aecd]
 - [x] Task: Refactor Chat Store for Performance afb4260
     - [x] Update `use-chat-store.ts` to support atomic selectors.
     - [x] Verify no regressions in `ChatDialog.tsx`.
 - [x] Task: Unit Testing for Chat Actions c252827
     - [x] Write tests for `send-message.ts`.
     - [x] Write tests for `get-messages.ts`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Stability' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Stability' (Protocol in workflow.md) 841aecd
 
 ## Phase 2: UI/UX Enhancements
 - [ ] Task: Implement Smooth Scrolling

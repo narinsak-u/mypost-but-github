@@ -10,7 +10,7 @@ export const useValidateQuery = () => {
   const replacePostInInfiniteQueries = (post: PostPopulated) => {
     queryClient.setQueriesData(
       {
-        predicate: (query) => String(query.queryKey[0]) === "posts-query",
+        predicate: (query) => query.queryKey[0] === "posts",
       },
       (oldData: any) => {
         if (!oldData?.pages?.length) return oldData;
@@ -27,7 +27,7 @@ export const useValidateQuery = () => {
   // revalidates all queries created by useGetPosts
   const invalidatePostQueries = async () => {
     await queryClient.invalidateQueries({
-      predicate: (query) => String(query.queryKey[0]) === "posts-query",
+      predicate: (query) => query.queryKey[0] === "posts",
     });
     await queryClient.invalidateQueries({ queryKey: ["starred-count"] });
   };

@@ -7,7 +7,6 @@ import { useEffect, useState, useTransition } from "react";
 import { toggleLike, toggleStar } from "@/actions/post-actions";
 import { toast } from "sonner";
 import { useValidateQuery } from "@/hooks/use-revalidate-query";
-import { useRouter } from "next/navigation";
 import { LoginModal } from "@/components/auth/LoginModal";
 
 type Props = {
@@ -21,7 +20,6 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
   const [hasStarred, setHasStarred] = useState<boolean>(false);
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
-  const { refresh } = useRouter();
   const { validatePostQueries } = useValidateQuery();
   const [isPending, startTransition] = useTransition();
 
@@ -43,7 +41,6 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
 
     setHasLiked(res.hasLiked);
     await validatePostQueries(updatedPost);
-    refresh();
   };
 
   const handleStar = async () => {
@@ -64,7 +61,6 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
 
     setHasStarred(res.hasStarred);
     await validatePostQueries(updatedPost);
-    refresh();
   };
 
   useEffect(() => {

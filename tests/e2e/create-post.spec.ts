@@ -25,7 +25,10 @@ test.describe("Post Creation Flow", () => {
     await expect(page.getByText(/account created successfully/i)).toBeVisible();
     await expect(page.locator("#signup-email")).not.toBeVisible();
     
-    // Wait for session to be reflected in Nav (Join Now should disappear)
+    // Reload page to ensure session is fully synced for server actions
+    await page.reload();
+    
+    // Wait for session to be reflected in Nav (User Avatar or Join Now disappearance)
     await expect(page.getByRole("button", { name: /join now/i })).not.toBeVisible();
 
     // 6. Now click "Create a Post" again as an authenticated user

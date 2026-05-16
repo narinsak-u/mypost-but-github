@@ -28,6 +28,10 @@ jobs:
 
       - name: Run unit tests with coverage
         run: npx vitest run tests/unit --coverage
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: http://localhost:3000
 
       - name: Upload coverage report
         if: always()
@@ -90,6 +94,11 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Sync Database Schema
+        run: npx prisma db push --accept-data-loss
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Build application
         run: npm run build

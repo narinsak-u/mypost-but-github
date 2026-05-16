@@ -1,3 +1,4 @@
+import "@/lib/env";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { db } from "@/lib/prismadb";

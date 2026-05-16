@@ -87,8 +87,8 @@ const ChatDialog = () => {
         {/* Sidebar - Conversation List */}
         <div
           className={cn(
-            "w-full sm:w-72 h-full shrink-0 border-r border-[#30363D]",
-            currentConversationId && "hidden sm:flex",
+            "w-full sm:w-72 h-full shrink-0 border-r border-[#30363D] transition-transform duration-300",
+            currentConversationId ? "-translate-x-full sm:translate-x-0 absolute sm:relative invisible sm:visible" : "translate-x-0 relative",
           )}
         >
           <ConversationList />
@@ -97,21 +97,21 @@ const ChatDialog = () => {
         {/* Main Content - Message Thread */}
         <div
           className={cn(
-            "flex-1 h-full min-w-0 flex flex-col",
-            !currentConversationId && "hidden sm:flex",
+            "flex-1 h-full min-w-0 flex flex-col transition-transform duration-300",
+            currentConversationId ? "translate-x-0 relative" : "translate-x-full sm:translate-x-0 absolute sm:relative invisible sm:visible",
           )}
         >
           {currentConversationId ? (
             <div className="flex-1 flex flex-col relative h-full [&>div:last-child>div:first-child]:pl-14 sm:[&>div:last-child>div:first-child]:pl-4">
               {/* Mobile Back Button */}
-              <div className="sm:hidden absolute top-3 left-2 z-10">
+              <div className="sm:hidden absolute top-2.5 left-2 z-10">
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => open(null)}
-                  className="h-10 w-10 rounded-full bg-[#1F1F1F]/80 backdrop-blur-sm shadow-sm border border-[#30363D] text-[#C9D1D9] hover:bg-[#262D34]"
+                  className="h-11 w-11 rounded-full bg-[#1F1F1F]/90 backdrop-blur-md shadow-lg border border-[#30363D] text-[#C9D1D9] hover:bg-[#262D34] active:scale-95 transition-all"
                 >
-                  <ChevronLeft className="h-6 w-6" />
+                  <ChevronLeft className="h-7 w-7" />
                 </Button>
               </div>
               <MessageThread conversationId={currentConversationId} />

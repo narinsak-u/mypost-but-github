@@ -7,43 +7,10 @@ on:
     branches: [main]
 
 jobs:
-  unit-tests:
-    name: Unit Tests
+  tests:
+    name: Unit & Integration Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
-
-      - name: Run unit tests with coverage
-        run: npx vitest run tests/unit --coverage
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: http://localhost:3000
-
-      - name: Upload coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-
-  integration-tests:
-    name: Integration Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -64,12 +31,19 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
 
-      - name: Run integration tests
-        run: npm run test:integration
+      - name: Run all tests with coverage
+        run: npm run test:coverage
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: http://localhost:3000
+          BETTER_AUTH_URL: http://127.0.0.1:3000
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
 
   e2e-tests:
     name: E2E Tests
@@ -109,7 +83,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: http://localhost:3000
+          BETTER_AUTH_URL: http://127.0.0.1:3000
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
@@ -120,7 +94,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: http://localhost:3000
+          BETTER_AUTH_URL: http://127.0.0.1:3000
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}

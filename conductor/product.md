@@ -20,6 +20,7 @@ A social platform that mimics GitHub's social interaction patterns—posts, comm
 ## Key Features
 - **User Profiles:** Personalized profiles showing user activity, posts, and followers.
 - **Social Feed:** A dynamic feed of posts from followed users and recommendations.
+- **Direct Messaging:** A real-time chat interface with smooth scrolling, loading states, and mobile optimization.
 - **Post Creation:** Rich text or Markdown-based post editor.
 - **Interactions:** "Starring" (liking) posts, commenting, and following users.
 - **Search:** Discovering users and content through an efficient search mechanism.

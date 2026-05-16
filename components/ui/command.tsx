@@ -64,6 +64,7 @@ export function CommandInput({
   return (
     <div
       className={cn("flex items-center border-b px-3", wrapperClassName)}
+      // eslint-disable-next-line react/no-unknown-property
       cmdk-input-wrapper=""
     >
       <Search

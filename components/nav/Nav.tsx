@@ -67,24 +67,27 @@ const Nav = (props: Props) => {
     const q = query.trim().toLowerCase();
     if (!q) return [] as FilteredUser[];
 
-    const users: FilteredUser[] = (userList ?? [])
-      .map((u) => {
-        const name = u.name || u.email?.split("@")[0] || "User";
-        const handle = `@${name.replace(/\s+/g, "")}`;
+    const users: FilteredUser[] = [];
+    for (const u of userList ?? []) {
+      const name = u.name || u.email?.split("@")[0] || "User";
+      const handle = `@${name.replace(/\s+/g, "")}`;
+      const user: FilteredUser = {
+        id: u.id,
+        name,
+        handle,
+        imageUrl: u.image || "",
+      };
+      if (
+        user.id &&
+        user.name &&
+        `${user.name} ${user.handle}`.toLowerCase().includes(q)
+      ) {
+        users.push(user);
+        if (users.length >= 8) break;
+      }
+    }
 
-        return {
-          id: u.id,
-          name,
-          handle,
-          imageUrl: u.image || "",
-        };
-      })
-      .filter(
-        (u) =>
-          u.id && u.name && `${u.name} ${u.handle}`.toLowerCase().includes(q),
-      );
-
-    return users.slice(0, 8);
+    return users;
   }, [query, userList]);
 
   // "/" key down effect

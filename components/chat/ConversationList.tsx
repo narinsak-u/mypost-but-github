@@ -23,11 +23,8 @@ const ConversationList = () => {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-2 p-4">
-        {[1, 2, 3].map((i) => (
-          <div
-            key={`conv-skeleton-${i}`}
-            className="flex items-center gap-3 p-2"
-          >
+        {["conv-1", "conv-2", "conv-3"].map((id) => (
+          <div key={id} className="flex items-center gap-3 p-2">
             <Skeleton className="size-10 rounded-full" />
             <div className="flex-1 space-y-2">
               <Skeleton className="h-4 w-[60%]" />

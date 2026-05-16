@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 type UserAvatarProps = {
@@ -32,7 +33,7 @@ export function UserAvatar({
 
   if (imageUrl) {
     return (
-      <img
+      <Image
         className={cn(
           "shrink-0 rounded-full object-cover",
           sizeClasses[size],
@@ -40,6 +41,8 @@ export function UserAvatar({
         )}
         src={imageUrl}
         alt={displayName}
+        width={40}
+        height={40}
         referrerPolicy="no-referrer"
       />
     );

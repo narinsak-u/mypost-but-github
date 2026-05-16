@@ -31,10 +31,11 @@ const MessageInput = ({ conversationId }: MessageInputProps) => {
   };
 
   useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const scrollHeight = textarea.scrollHeight;
+    textarea.style.height = "auto";
+    textarea.style.height = `${scrollHeight}px`;
   }, [content]);
 
   return (

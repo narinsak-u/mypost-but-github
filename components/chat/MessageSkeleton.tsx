@@ -16,17 +16,17 @@ export const MessageSkeleton = () => {
 
       {/* Messages Skeleton */}
       <div className="flex-1 p-4 space-y-4 overflow-hidden">
-        {[1, 2, 3, 4, 5].map((i) => (
+        {["msg-1", "msg-2", "msg-3", "msg-4", "msg-5"].map((id, idx) => (
           <div
-            key={`msg-skeleton-${i}`}
-            className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}
+            key={id}
+            className={`flex ${idx % 2 === 0 ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`flex flex-col gap-1 ${i % 2 === 0 ? "items-end" : "items-start"} max-w-[80%]`}
+              className={`flex flex-col gap-1 ${idx % 2 === 0 ? "items-end" : "items-start"} max-w-[80%]`}
             >
               <Skeleton
                 className={`h-10 w-48 rounded-2xl ${
-                  i % 2 === 0
+                  idx % 2 === 0
                     ? "rounded-tr-none bg-[#238636]/20"
                     : "rounded-tl-none bg-[#30363D]"
                 }`}

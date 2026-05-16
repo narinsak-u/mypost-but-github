@@ -22,15 +22,16 @@ type Props = {
 const UserProfileContent = async ({ params }: Props) => {
   const { userId } = await params;
 
-  const [stars, user, session] = await Promise.all([
-    getUserStars(userId),
-    db.user.findUnique({ where: { id: userId } }),
-    auth.api.getSession({ headers: await headers() }),
-  ]);
+  const user = await db.user.findUnique({ where: { id: userId } });
 
   if (!user) {
     return <div>User not found</div>;
   }
+
+  const [stars, session] = await Promise.all([
+    getUserStars(userId),
+    auth.api.getSession({ headers: await headers() }),
+  ]);
 
   const [{ followersCount }, { followingCount }, { isFollowing }] =
     await Promise.all([

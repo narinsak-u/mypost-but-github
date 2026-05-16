@@ -25,8 +25,10 @@ export async function GET(request: NextRequest) {
       },
       include: {
         user: true,
-        _count: {
-          select: { comments: true },
+        comments: {
+          include: {
+            post: { select: { userId: true } },
+          },
         },
       },
     });

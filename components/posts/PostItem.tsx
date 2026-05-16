@@ -7,16 +7,12 @@ import Tag from "../Tag";
 import ReactionButton from "./ReactionButton";
 import CommentSection from "../comments/CommentSection";
 import OptionMenu from "../OptionMenu";
-import { PostPopulated } from "@/types";
+import { PostPopulated, ReactionButtonType } from "@/types";
 import { useParseContent } from "@/hooks/use-parse-content";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
-
-export type ReactionButtonType = {
-  comment: boolean;
-};
 
 type Props = {
   post: PostPopulated;

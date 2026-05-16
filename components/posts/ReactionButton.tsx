@@ -1,7 +1,6 @@
 "use client";
 
-import { ReactionButtonType } from "./PostItem";
-import { PostPopulated } from "@/types";
+import { PostPopulated, ReactionButtonType } from "@/types";
 import { Heart, MessagesSquare, Star } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useEffect, useState, useTransition } from "react";

@@ -83,3 +83,7 @@ export type MessageWithSender = Prisma.MessageGetPayload<{
 
 export type FIRST_TAB = "For You" | "Overview";
 export type SECOND_TAB = "Following" | "Starred";
+
+export type ReactionButtonType = {
+  comment: boolean;
+};

@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const USER_ID = "d57G0hkPAeAwKxGY6TvcI35je3TxC5DB";
+const USER_ID = process.env.SEED_USER_ID as string;
 
 const posts = [
   {
@@ -73,7 +73,7 @@ const comments = [
 async function seed() {
   console.log("Seeding posts...");
 
-  for (let i = 0; i < posts.length; i++) {
+  for (let i = 0; i < 5; i++) {
     const postData = posts[i]!;
 
     const post = await prisma.post.create({

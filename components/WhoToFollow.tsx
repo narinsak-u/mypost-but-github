@@ -23,12 +23,6 @@ const WhoToFollow = () => {
     <section className="mt-12">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold">Recommended for you</h2>
-        {/*<button
-          type="button"
-          className="text-sm font-medium text-[#58A6FF] hover:underline"
-        >
-          View all
-        </button>*/}
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">

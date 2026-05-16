@@ -105,6 +105,17 @@ describe("toggleFollow", () => {
     });
     expect(result).toEqual({ success: true, followed: true });
   });
+
+  it("should return error on database failure", async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue({
+      user: { id: "user-1" },
+    } as any);
+
+    vi.mocked(db.follower.findFirst).mockRejectedValue(new Error("DB error"));
+
+    const result = await toggleFollow("user-2");
+    expect(result).toEqual({ error: "Could not follow. Please try later" });
+  });
 });
 
 describe("getIsFollowing", () => {
@@ -116,6 +127,15 @@ describe("getIsFollowing", () => {
     vi.mocked(auth.api.getSession).mockResolvedValue(null);
 
     const result = await getIsFollowing("user-2");
+    expect(result).toEqual({ isFollowing: false });
+  });
+
+  it("should return false if followingId is empty", async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue({
+      user: { id: "user-1" },
+    } as any);
+
+    const result = await getIsFollowing("");
     expect(result).toEqual({ isFollowing: false });
   });
 

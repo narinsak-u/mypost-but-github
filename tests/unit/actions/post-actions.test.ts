@@ -254,6 +254,26 @@ describe("toggleStar", () => {
     expect(result).toEqual({ error: "Unauthorized" });
   });
 
+  it("should return error for invalid ID", async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue({
+      user: { id: "user-1" },
+    } as any);
+
+    const result = await toggleStar("");
+    expect(result).toEqual({ error: "Invalid ID" });
+  });
+
+  it("should return error if post not found", async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue({
+      user: { id: "user-1" },
+    } as any);
+
+    vi.mocked(prisma.post.findUnique).mockResolvedValue(null);
+
+    const result = await toggleStar("post-1");
+    expect(result).toEqual({ error: "Post not found" });
+  });
+
   it("should star a post", async () => {
     vi.mocked(auth.api.getSession).mockResolvedValue({
       user: { id: "user-1" },

@@ -11,7 +11,7 @@ test.describe("Authentication", () => {
   }) => {
     await page.goto("/");
     const signInButton = page
-      .getByRole("button", { name: /sign in|log in|login/i })
+      .getByRole("button", { name: /sign in|log in|login|join now/i })
       .first();
     await expect(signInButton).toBeVisible();
   });

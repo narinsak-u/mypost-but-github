@@ -13,7 +13,7 @@ export const test = base.extend<{
     const login = async (): Promise<void> => {
       await page.goto("/");
       const signInButton = page
-        .getByRole("button", { name: /sign in|log in|login/i })
+        .getByRole("button", { name: /sign in|log in|login|join now/i })
         .first();
       if (await signInButton.isVisible()) {
         await signInButton.click();

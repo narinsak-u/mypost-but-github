@@ -24,6 +24,9 @@ test.describe("Post Creation Flow", () => {
     // 5. Verify success toast and modal closure
     await expect(page.getByText(/account created successfully/i)).toBeVisible();
     await expect(page.locator("#signup-email")).not.toBeVisible();
+    
+    // Wait for session to be reflected in Nav (Join Now should disappear)
+    await expect(page.getByRole("button", { name: /join now/i })).not.toBeVisible();
 
     // 6. Now click "Create a Post" again as an authenticated user
     await createPostBtn.click();

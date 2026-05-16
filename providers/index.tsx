@@ -10,9 +10,22 @@ type Props = {
   children: React.ReactNode;
 };
 
-const Providers = ({ children }: Props) => {
-  const [queryClient] = useState(() => new QueryClient());
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 30,
+      retry: 3,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
 
+const Providers = ({ children }: Props) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}

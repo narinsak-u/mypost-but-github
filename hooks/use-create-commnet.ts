@@ -2,52 +2,56 @@
 
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import { CommentInput } from "@/types";
 import { Post } from "@prisma/client";
+import { queryKeys } from "@/lib/query-keys";
 
 const useCreateComment = (post: Post) => {
-  // Get access to query client instance
   const queryClient = useQueryClient();
 
   const { mutateAsync: createComment, isPending } = useMutation({
     mutationFn: async (payload: CommentInput) => {
-      return await axios.post(`/api/post/${post.id}/comment`, { ...payload });
+      const response = await axios.post(
+        `/api/post/${post.id}/comment`,
+        payload,
+      );
+      return response.data;
     },
-    onMutate: async (newData: any) => {
-      // Cancel any outgoing refetches
+    onMutate: async (newComment) => {
       await queryClient.cancelQueries({
-        queryKey: ["posts-query", newData.id],
+        queryKey: queryKeys.comments.byPost(post.id),
       });
 
-      // Snapshot the previous value
-      const previousData = queryClient.getQueryData([
-        "posts-query",
-        newData.id,
-      ]);
+      const previousComments = queryClient.getQueryData(
+        queryKeys.comments.byPost(post.id),
+      );
 
-      // Optimistically update to the new value
-      queryClient.setQueryData(["posts-query", newData.id], newData);
+      const optimisticComment = {
+        id: `temp-${Date.now()}`,
+        body: newComment.body,
+        createdAt: new Date().toISOString(),
+        postId: post.id,
+      };
 
-      // Return a context with the previous and new todo
-      return { previousData, newData };
-    },
-
-    // If the mutation fails, use the context we returned above
-    onError: (err, newData, context) => {
       queryClient.setQueryData(
-        ["posts-query", context?.newData.id],
-        context?.previousData
+        queryKeys.comments.byPost(post.id),
+        (old: unknown[]) => [...(old || []), optimisticComment],
+      );
+
+      return { previousComments };
+    },
+    onError: (_err, _newComment, context) => {
+      queryClient.setQueryData(
+        queryKeys.comments.byPost(post.id),
+        context?.previousComments,
       );
     },
-
-    onSuccess: (newData: any) => {
-      // queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+    onSettled: () => {
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey.every((key) =>
-            ["posts-query", "starred-posts"].includes(String(key))
-          ),
+        queryKey: queryKeys.comments.byPost(post.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.posts.infinite(),
       });
     },
   });

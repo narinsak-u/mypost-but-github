@@ -1,22 +1,29 @@
 "use client";
 
 import axios from "axios";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/query-keys";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+}
 
 type Props = {
   userId: string;
 };
 
 export const useGetUser = ({ userId }: Props) => {
-  //   const queryClient = useQueryClient();
-
-  const { data, isFetching } = useQuery({
-    queryKey: ["fetct-user", userId],
+  const { data, isFetching, isError, error } = useQuery<User, Error>({
+    queryKey: queryKeys.users.detail(userId),
     queryFn: async () => {
-      const { data } = await axios.get(`/api/user/${userId}`);
-      return data
+      const { data } = await axios.get<User>(`/api/user/${userId}`);
+      return data;
     },
+    enabled: !!userId,
   });
 
-  return { data, isFetching };
+  return { data, isFetching, isError, error };
 };

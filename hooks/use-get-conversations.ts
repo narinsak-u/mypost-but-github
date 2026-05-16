@@ -2,10 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getConversations } from "@/actions/get-conversations";
+import { queryKeys } from "@/lib/query-keys";
 
 export const useGetConversations = () => {
   return useQuery({
-    queryKey: ["conversations"],
+    queryKey: queryKeys.conversations.all,
     queryFn: async () => {
       const result = await getConversations();
       if ("error" in result) {

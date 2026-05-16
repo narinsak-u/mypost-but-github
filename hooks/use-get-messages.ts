@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getMessages } from "@/actions/get-messages";
+import { queryKeys } from "@/lib/query-keys";
 
 export const useGetMessages = (conversationId: string | null) => {
   return useQuery({
@@ -15,6 +16,8 @@ export const useGetMessages = (conversationId: string | null) => {
       return result;
     },
     enabled: !!conversationId,
-    refetchInterval: 3000,
+    refetchInterval: 10000, // 10 seconds
+    staleTime: 5000, // 5 seconds
+    retry: 1,
   });
 };

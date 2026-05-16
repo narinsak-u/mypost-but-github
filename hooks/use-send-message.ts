@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { sendMessage } from "@/actions/send-message";
 import { toast } from "sonner";
+import { queryKeys } from "@/lib/query-keys";
 
 export const useSendMessage = () => {
   const queryClient = useQueryClient();
@@ -23,10 +24,10 @@ export const useSendMessage = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["messages", variables.conversationId],
+        queryKey: queryKeys.messages.byConversation(variables.conversationId),
       });
       queryClient.invalidateQueries({
-        queryKey: ["conversations"],
+        queryKey: queryKeys.conversations.all,
       });
     },
     onError: (error: Error) => {

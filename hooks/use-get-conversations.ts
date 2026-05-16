@@ -3,8 +3,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { getConversations } from "@/actions/get-conversations";
 import { queryKeys } from "@/lib/query-keys";
+import useChatStore from "@/store/use-chat-store";
 
 export const useGetConversations = () => {
+  const isOpen = useChatStore((state) => state.isOpen);
+
   return useQuery({
     queryKey: queryKeys.conversations.all,
     queryFn: async () => {
@@ -14,6 +17,9 @@ export const useGetConversations = () => {
       }
       return result;
     },
-    refetchInterval: 5000,
+    // Only poll when chat is open, at a much longer interval
+    refetchInterval: isOpen ? 60000 : false,
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
   });
 };

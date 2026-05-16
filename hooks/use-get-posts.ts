@@ -54,7 +54,6 @@ export const useGetPosts = ({ limit, userId }: Props) => {
       }
       return allPages.length + 1;
     },
-    initialData: { pages: [], pageParams: [1] },
   });
 
   const posts = data?.pages.flatMap((page) => page) ?? [];

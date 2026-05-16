@@ -2,9 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getMessages } from "@/actions/get-messages";
-import { queryKeys } from "@/lib/query-keys";
+import useChatStore from "@/store/use-chat-store";
 
 export const useGetMessages = (conversationId: string | null) => {
+  const isOpen = useChatStore((state) => state.isOpen);
+  const isCollapsed = useChatStore((state) => state.isCollapsed);
+
   return useQuery({
     queryKey: ["messages", conversationId],
     queryFn: async () => {
@@ -15,9 +18,11 @@ export const useGetMessages = (conversationId: string | null) => {
       }
       return result;
     },
-    enabled: !!conversationId,
-    refetchInterval: 10000, // 10 seconds
-    staleTime: 5000, // 5 seconds
+    enabled: !!conversationId && isOpen,
+    // Only poll if chat is open and NOT collapsed
+    refetchInterval: isOpen && !isCollapsed ? 30000 : false,
+    staleTime: 15000,
+    refetchOnWindowFocus: false,
     retry: 1,
   });
 };

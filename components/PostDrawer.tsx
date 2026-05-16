@@ -45,7 +45,7 @@ const PostDrawer = (props: Props) => {
   const { isOpen, onClose } = usePostModal();
   const [isPending, startTransition] = useTransition();
 
-  const router = useRouter();
+  const { refresh } = useRouter();
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
   const { validatePostQueries } = useValidateQuery();
@@ -70,8 +70,12 @@ const PostDrawer = (props: Props) => {
         setSelectedtag(null);
 
         //  validate post queries
-        await validatePostQueries({ ...post, comments: [] });
-        router.refresh();
+        await validatePostQueries({
+          ...post,
+          user: session.user,
+          comments: [],
+        } as any);
+        refresh();
       }
     } catch (error: any) {
       toast.error(`${error.message} ‼️`, { duration: 1500 });
@@ -115,7 +119,7 @@ const PostDrawer = (props: Props) => {
               >
                 {isPending ? (
                   <>
-                    <RotateCcw className="mr-2 h-4 w-4 animate-spin" />
+                    <RotateCcw className="mr-2 size-4 animate-spin" />
                     Create post
                   </>
                 ) : (

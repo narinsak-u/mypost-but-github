@@ -14,16 +14,17 @@ import {
 
 import useOptionModal from "@/store/use-option-modal";
 import { authClient } from "@/lib/auth-client";
-import { Post, Comment } from "@prisma/client";
+import { Comment } from "@prisma/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { deletePost } from "@/actions/post-actions";
 import { deleteComment } from "@/actions/comment-actions";
 import { useValidateQuery } from "@/hooks/use-revalidate-query";
+import { PostPopulated } from "@/types";
 
 type Props = {
-  post: Post;
+  post: PostPopulated;
   comment?: Comment;
   isComment?: boolean;
 };
@@ -34,7 +35,7 @@ const OptionMenu = ({ post, comment, isComment }: Props) => {
   const userId = session?.user?.id;
   const [isPending, startTransition] = useTransition();
   const { validatePostQueries } = useValidateQuery();
-  const router = useRouter();
+  const { refresh } = useRouter();
 
   const onCopy = () => {
     const text = !isComment
@@ -72,9 +73,15 @@ const OptionMenu = ({ post, comment, isComment }: Props) => {
     try {
       await promise;
 
+      if (!session) return;
+
       //  validate post queries
-      await validatePostQueries({ ...post, comments: [] });
-      router.refresh();
+      await validatePostQueries({
+        ...post,
+        user: session.user,
+        comments: post.comments || [],
+      } as any);
+      refresh();
     } catch (error: any) {
       toast.error(`${error.message} ‼️`, { duration: 1500 });
     }

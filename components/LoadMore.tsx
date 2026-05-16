@@ -6,10 +6,16 @@ import { Rocket } from "lucide-react";
 type Props = {
   isFetchingNextPage?: boolean;
   hasNextPage?: boolean;
+  isFetching?: boolean;
   loadNextPost: () => Promise<void>;
 };
 
-const LoadMore = ({ loadNextPost, hasNextPage, isFetchingNextPage }: Props) => {
+const LoadMore = ({
+  loadNextPost,
+  hasNextPage,
+  isFetchingNextPage,
+  isFetching,
+}: Props) => {
   return (
     <div
       role="button"
@@ -32,7 +38,9 @@ const LoadMore = ({ loadNextPost, hasNextPage, isFetchingNextPage }: Props) => {
           ? "Loading..."
           : hasNextPage
             ? "More"
-            : "No more post"}
+            : isFetching
+              ? "Loading..."
+              : "No more post"}
       </div>
     </div>
   );

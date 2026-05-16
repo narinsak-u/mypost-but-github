@@ -27,6 +27,7 @@ const Feed = ({ userId }: Props) => {
         loadNextPost={loadNextPost}
         isFetchingNextPage={isFetchingNextPage}
         hasNextPage={hasNextPage}
+        isFetching={isFetching}
       />
     </div>
   );

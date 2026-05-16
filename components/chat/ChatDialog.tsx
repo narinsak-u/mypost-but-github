@@ -8,24 +8,31 @@ import { ChevronLeft, X, Minus, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ChatDialog = () => {
-  const { isOpen, close, currentConversationId, open, isCollapsed, toggleCollapse } = useChatStore();
+  const {
+    isOpen,
+    close,
+    currentConversationId,
+    open,
+    isCollapsed,
+    toggleCollapse,
+  } = useChatStore();
 
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className={cn(
-        "fixed bottom-0 right-0 sm:right-4 z-[50] flex flex-col bg-[#1F1F1F] border border-[#30363D] shadow-2xl transition-all duration-300 ease-in-out overflow-hidden rounded-t-xl",
-        isCollapsed ? "h-[48px] w-72" : "h-[500px] w-full max-w-[400px] sm:max-w-3xl"
+        "fixed bottom-0 right-0 sm:right-4 z-50 flex flex-col bg-[#1F1F1F] border border-[#30363D] shadow-2xl transition-all duration-300 ease-in-out overflow-hidden rounded-t-xl",
+        isCollapsed ? "h-12 w-72" : "h-125 w-full max-w-100 sm:max-w-3xl",
       )}
     >
       {/* Custom Header */}
-      <div 
+      <div
         role="button"
         tabIndex={0}
         aria-expanded={!isCollapsed}
         aria-label={isCollapsed ? "Expand chat" : "Collapse chat"}
-        className="h-[48px] px-4 flex items-center justify-between border-b border-[#30363D] bg-[#262D34] cursor-pointer"
+        className="h-12 px-4 flex items-center justify-between border-b border-[#30363D] bg-[#262D34] cursor-pointer"
         onClick={() => toggleCollapse()}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -35,15 +42,19 @@ const ChatDialog = () => {
         }}
       >
         <div className="flex items-center gap-2 overflow-hidden">
-           {/* If collapsed and has conversation, show context (Option B) */}
-           {isCollapsed && currentConversationId ? (
-             <div className="flex items-center gap-2">
-               <div className="w-6 h-6 rounded-full bg-[#30363D]" />
-               <span className="text-sm font-medium text-[#C9D1D9] truncate">Conversation</span>
-             </div>
-           ) : (
-             <span className="text-sm font-medium text-[#C9D1D9]">Direct Messages</span>
-           )}
+          {/* If collapsed and has conversation, show context (Option B) */}
+          {isCollapsed && currentConversationId ? (
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#30363D]" />
+              <span className="text-sm font-medium text-[#C9D1D9] truncate">
+                Conversation
+              </span>
+            </div>
+          ) : (
+            <span className="text-sm font-medium text-[#C9D1D9]">
+              Direct Messages
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-1">
           <Button
@@ -55,7 +66,11 @@ const ChatDialog = () => {
               toggleCollapse();
             }}
           >
-            {isCollapsed ? <ChevronUp className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+            {isCollapsed ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <Minus className="h-4 w-4" />
+            )}
           </Button>
           <Button
             variant="ghost"
@@ -72,7 +87,9 @@ const ChatDialog = () => {
       </div>
 
       {/* Main Content (Hidden when collapsed) */}
-      <div className={cn("flex-1 flex overflow-hidden", isCollapsed && "hidden")}>
+      <div
+        className={cn("flex-1 flex overflow-hidden", isCollapsed && "hidden")}
+      >
         {/* Sidebar - Conversation List */}
         <div
           className={cn(
@@ -122,7 +139,9 @@ const ChatDialog = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-[#C9D1D9]">Select a message</h3>
+              <h3 className="text-lg font-medium text-[#C9D1D9]">
+                Select a message
+              </h3>
             </div>
           )}
         </div>

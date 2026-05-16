@@ -45,9 +45,9 @@ const ConversationList = () => {
 
   return (
     <div className="flex flex-col h-full overflow-y-auto w-full">
-      <div className="p-4 border-b border-[#30363D] bg-[#1F1F1F]">
+      {/*<div className="p-4 border-b border-[#30363D] bg-[#1F1F1F]">
         <h2 className="font-semibold text-lg text-[#C9D1D9]">Messages</h2>
-      </div>
+      </div>*/}
       <div className="flex-1 bg-[#1F1F1F]">
         {conversationList.map((conversation) => {
           const otherParticipant = conversation.participants.find(

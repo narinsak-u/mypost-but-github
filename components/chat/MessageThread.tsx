@@ -23,10 +23,10 @@ const MessageThread = ({ conversationId }: MessageThreadProps) => {
   const currentUser = session?.user;
 
   const currentConversation = conversations?.find(
-    (c: any) => c.id === conversationId
+    (c: any) => c.id === conversationId,
   );
   const otherParticipant = currentConversation?.participants.find(
-    (p: any) => p.id !== currentUser?.id
+    (p: any) => p.id !== currentUser?.id,
   );
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const MessageThread = ({ conversationId }: MessageThreadProps) => {
       {/* Header */}
       <div className="p-4 border-b border-[#30363D] flex items-center gap-3 shrink-0 bg-[#1F1F1F]">
         <UserAvatar
-          imageUrl={otherParticipant?.image}
+          imageUrl={otherParticipant?.image || "https://github.com/shadcn.png"}
           name={otherParticipant?.name}
           size="lg"
         />
@@ -89,7 +89,9 @@ const MessageThread = ({ conversationId }: MessageThreadProps) => {
           ) : (
             <div className="flex flex-col items-center justify-center h-full py-10 text-center text-muted-foreground">
               <p className="text-sm">No messages yet.</p>
-              <p className="text-xs">Send a message to start the conversation!</p>
+              <p className="text-xs">
+                Send a message to start the conversation!
+              </p>
             </div>
           )}
         </div>

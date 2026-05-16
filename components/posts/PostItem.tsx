@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import DOMPurify from "isomorphic-dompurify";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import Tag from "../Tag";
 import ReactionButton from "./ReactionButton";
@@ -31,7 +32,11 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
   });
   const router = useRouter();
   const { data: user, isFetching } = useGetUser({ userId: post.userId });
-  const postBody = useParseContent(post.body!);
+  const rawBody = useParseContent(post.body!);
+  const sanitizedBody = useMemo(
+    () => (rawBody ? DOMPurify.sanitize(rawBody) : ""),
+    [rawBody],
+  );
 
   return (
     <div className={cn("flex flex-col h-fit mt-10", className)}>
@@ -94,7 +99,7 @@ const PostItem = ({ post, isPost, isSuggestion, className }: Props) => {
               className={cn(
                 isSuggestion && "text-xs text-[#ADBAC7] line-clamp-2 mt-2",
               )}
-              dangerouslySetInnerHTML={{ __html: postBody! }}
+              dangerouslySetInnerHTML={{ __html: sanitizedBody }}
             />
             {!isSuggestion && (
               <div className={"mt-7"}>

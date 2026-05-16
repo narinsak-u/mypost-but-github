@@ -13,6 +13,10 @@ export async function GET(request: NextRequest) {
     const limit = limitParam ? parseInt(limitParam) : 10;
     const page = pageParam ? parseInt(pageParam) : 1;
 
+    if (Number.isNaN(limit) || Number.isNaN(page)) {
+      return new Response("Invalid pagination parameters", { status: 400 });
+    }
+
     const posts = await prisma.post.findMany({
       take: limit,
       skip: (page - 1) * limit,

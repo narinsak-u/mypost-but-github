@@ -20,10 +20,6 @@ describe("Integration: follow-actions", () => {
     await clearDatabase();
   }, 30000);
 
-  afterEach(async () => {
-    await clearDatabase();
-  }, 30000);
-
   describe("toggleFollow", () => {
     it("follows a user", async () => {
       const follower = await seedTestUser();

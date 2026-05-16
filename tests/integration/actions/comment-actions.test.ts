@@ -25,10 +25,6 @@ describe("Integration: comment-actions", () => {
     await clearDatabase();
   }, 30000);
 
-  afterEach(async () => {
-    await clearDatabase();
-  }, 30000);
-
   describe("createComment", () => {
     it("creates a comment in the database", async () => {
       const user = await seedTestUser();

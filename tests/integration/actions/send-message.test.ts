@@ -25,10 +25,6 @@ describe("Integration: send-message", () => {
     await clearDatabase();
   }, 30000);
 
-  afterEach(async () => {
-    await clearDatabase();
-  }, 30000);
-
   describe("sendMessage", () => {
     it("sends a message successfully", async () => {
       const user1 = await seedTestUser();

@@ -26,10 +26,6 @@ describe("Integration: post-actions", () => {
     await clearDatabase();
   }, 30000);
 
-  afterEach(async () => {
-    await clearDatabase();
-  }, 30000);
-
   describe("createPost", () => {
     it("creates a post in the database", async () => {
       const user = await seedTestUser();

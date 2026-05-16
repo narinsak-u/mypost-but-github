@@ -38,18 +38,20 @@ describe("sendMessage", () => {
   });
 
   it("should return unauthorized if no user session", async () => {
-    (auth.api.getSession as any).mockResolvedValue(null);
+    vi.mocked(auth.api.getSession).mockResolvedValue(null);
 
     const result = await sendMessage("conv-1", "hello");
     expect(result).toEqual({ error: "Unauthorized" });
   });
 
   it("should create a message and update conversation", async () => {
-    (auth.api.getSession as any).mockResolvedValue({
+    vi.mocked(auth.api.getSession).mockResolvedValue({
       user: { id: "user-1" },
-    });
+    } as any);
 
-    (prisma.conversation.findFirst as any).mockResolvedValue({ id: "conv-1" });
+    vi.mocked(prisma.conversation.findFirst).mockResolvedValue({
+      id: "conv-1",
+    } as any);
 
     const mockMessage = {
       id: "msg-1",
@@ -57,7 +59,7 @@ describe("sendMessage", () => {
       conversationId: "conv-1",
       senderId: "user-1",
     };
-    (prisma.message.create as any).mockResolvedValue(mockMessage);
+    vi.mocked(prisma.message.create).mockResolvedValue(mockMessage as any);
 
     const result = await sendMessage("conv-1", "hello");
 
@@ -83,20 +85,20 @@ describe("sendMessage", () => {
   });
 
   it("should return unauthorized if user is not a participant", async () => {
-    (auth.api.getSession as any).mockResolvedValue({
+    vi.mocked(auth.api.getSession).mockResolvedValue({
       user: { id: "user-1" },
-    });
+    } as any);
 
-    (prisma.conversation.findFirst as any).mockResolvedValue(null);
+    vi.mocked(prisma.conversation.findFirst).mockResolvedValue(null);
 
     const result = await sendMessage("conv-1", "hello");
     expect(result).toEqual({ error: "Unauthorized or conversation not found" });
   });
 
   it("should return error for missing fields", async () => {
-    (auth.api.getSession as any).mockResolvedValue({
+    vi.mocked(auth.api.getSession).mockResolvedValue({
       user: { id: "user-1" },
-    });
+    } as any);
 
     const result = await sendMessage("", "");
     expect(result).toEqual({ error: "Missing required fields" });

@@ -32,24 +32,26 @@ describe("getMessages", () => {
   });
 
   it("should return unauthorized if no user session", async () => {
-    (auth.api.getSession as any).mockResolvedValue(null);
+    vi.mocked(auth.api.getSession).mockResolvedValue(null);
 
     const result = await getMessages("conv-1");
     expect(result).toEqual({ error: "Unauthorized" });
   });
 
   it("should return messages for a conversation", async () => {
-    (auth.api.getSession as any).mockResolvedValue({
+    vi.mocked(auth.api.getSession).mockResolvedValue({
       user: { id: "user-1" },
-    });
+    } as any);
 
-    (prisma.conversation.findFirst as any).mockResolvedValue({ id: "conv-1" });
+    vi.mocked(prisma.conversation.findFirst).mockResolvedValue({
+      id: "conv-1",
+    } as any);
 
     const mockMessages = [
       { id: "msg-1", content: "hello", sender: { name: "User 1" } },
       { id: "msg-2", content: "hi", sender: { name: "User 2" } },
     ];
-    (prisma.message.findMany as any).mockResolvedValue(mockMessages);
+    vi.mocked(prisma.message.findMany).mockResolvedValue(mockMessages as any);
 
     const result = await getMessages("conv-1");
 
@@ -77,20 +79,20 @@ describe("getMessages", () => {
   });
 
   it("should return unauthorized if user is not a participant", async () => {
-    (auth.api.getSession as any).mockResolvedValue({
+    vi.mocked(auth.api.getSession).mockResolvedValue({
       user: { id: "user-1" },
-    });
+    } as any);
 
-    (prisma.conversation.findFirst as any).mockResolvedValue(null);
+    vi.mocked(prisma.conversation.findFirst).mockResolvedValue(null);
 
     const result = await getMessages("conv-1");
     expect(result).toEqual({ error: "Unauthorized or conversation not found" });
   });
 
   it("should return error if conversationId is missing", async () => {
-    (auth.api.getSession as any).mockResolvedValue({
+    vi.mocked(auth.api.getSession).mockResolvedValue({
       user: { id: "user-1" },
-    });
+    } as any);
 
     const result = await getMessages("");
     expect(result).toEqual({ error: "Conversation ID is required" });

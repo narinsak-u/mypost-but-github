@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { BlockNoteSchema, defaultInlineContentSpecs } from "@blocknote/core";
 
-// @ts-ignore
 import { filterSuggestionItems } from "@blocknote/core/extensions";
 
 import "@blocknote/core/fonts/inter.css";
@@ -32,7 +31,7 @@ const schema = BlockNoteSchema.create({
 
 const getMentionMenuItems = (
   editor: typeof schema.BlockNoteEditor,
-  users: string[]
+  users: string[],
 ): DefaultReactSuggestionItem[] => {
   return users.map((user) => ({
     title: user,
@@ -51,7 +50,7 @@ const getMentionMenuItems = (
 };
 
 const Editor = ({
-  onChange = () => { },
+  onChange = () => {},
   editable,
   initialContent,
   users = [],

@@ -6,6 +6,7 @@ export const clearDatabase = async () => {
   await prisma.comment.deleteMany();
   await prisma.follower.deleteMany();
   await prisma.post.deleteMany();
+  await prisma.verification.deleteMany();
   await prisma.account.deleteMany();
   await prisma.session.deleteMany();
   await prisma.user.deleteMany();

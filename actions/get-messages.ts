@@ -23,6 +23,19 @@ export const getMessages = async (conversationId: string) => {
       return { error: "Conversation ID is required" };
     }
 
+    const conversation = await prisma.conversation.findFirst({
+      where: {
+        id: conversationId,
+        participantIds: {
+          has: userId,
+        },
+      },
+    });
+
+    if (!conversation) {
+      return { error: "Unauthorized or conversation not found" };
+    }
+
     const messages = await prisma.message.findMany({
       where: {
         conversationId,

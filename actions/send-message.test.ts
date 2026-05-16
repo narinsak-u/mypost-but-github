@@ -11,6 +11,7 @@ vi.mock('@/lib/prismadb', () => ({
     },
     conversation: {
       update: vi.fn(),
+      findFirst: vi.fn(),
     },
   },
 }));
@@ -48,10 +49,21 @@ describe('sendMessage', () => {
       user: { id: 'user-1' },
     });
     
+    (prisma.conversation.findFirst as any).mockResolvedValue({ id: 'conv-1' });
+
     const mockMessage = { id: 'msg-1', content: 'hello', conversationId: 'conv-1', senderId: 'user-1' };
     (prisma.message.create as any).mockResolvedValue(mockMessage);
 
     const result = await sendMessage('conv-1', 'hello');
+
+    expect(prisma.conversation.findFirst).toHaveBeenCalledWith({
+      where: {
+        id: 'conv-1',
+        participantIds: {
+          has: 'user-1',
+        },
+      },
+    });
 
     expect(prisma.message.create).toHaveBeenCalledWith({
       data: {
@@ -63,6 +75,17 @@ describe('sendMessage', () => {
     expect(prisma.conversation.update).toHaveBeenCalled();
     expect(revalidatePath).toHaveBeenCalledWith('/');
     expect(result).toEqual(mockMessage);
+  });
+
+  it('should return unauthorized if user is not a participant', async () => {
+    (auth.api.getSession as any).mockResolvedValue({
+      user: { id: 'user-1' },
+    });
+    
+    (prisma.conversation.findFirst as any).mockResolvedValue(null);
+
+    const result = await sendMessage('conv-1', 'hello');
+    expect(result).toEqual({ error: 'Unauthorized or conversation not found' });
   });
 
   it('should return error for missing fields', async () => {

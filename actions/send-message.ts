@@ -24,6 +24,19 @@ export const sendMessage = async (conversationId: string, content: string) => {
       return { error: "Missing required fields" };
     }
 
+    const conversation = await prisma.conversation.findFirst({
+      where: {
+        id: conversationId,
+        participantIds: {
+          has: userId,
+        },
+      },
+    });
+
+    if (!conversation) {
+      return { error: "Unauthorized or conversation not found" };
+    }
+
     const message = await prisma.message.create({
       data: {
         content,

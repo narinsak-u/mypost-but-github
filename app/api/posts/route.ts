@@ -25,19 +25,11 @@ export async function GET(request: NextRequest) {
       },
       include: {
         user: true,
-        comments: {
-          include: {
-            post: {
-              select: {
-                userId: true,
-              },
-            },
-          },
+        _count: {
+          select: { comments: true },
         },
       },
     });
-
-    revalidatePath("/");
 
     return NextResponse.json(posts);
   } catch (error) {

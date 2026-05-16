@@ -56,8 +56,9 @@ export function CommandInput({
   className,
   wrapperClassName,
   iconClassName,
+  ref,
   ...props
-}: React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> & {
+}: React.ComponentProps<typeof CommandPrimitive.Input> & {
   wrapperClassName?: string;
   iconClassName?: string;
 }) {
@@ -71,6 +72,7 @@ export function CommandInput({
         className={cn("mr-2 size-4 shrink-0 opacity-50", iconClassName)}
       />
       <CommandPrimitive.Input
+        ref={ref}
         className={cn(
           "flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
           className,

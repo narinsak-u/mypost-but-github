@@ -125,16 +125,14 @@ export const toggleLike = async (postId: string): Promise<ToggleLikeResult> => {
     const likedIds = post.likedIds ?? [];
     const currentlyLiked = likedIds.includes(userId);
 
-    const updatedLikedIds = currentlyLiked
-      ? likedIds.filter((id) => id !== userId)
-      : [...likedIds, userId];
-
     await prisma.post.update({
       where: {
         id: postId,
       },
       data: {
-        likedIds: updatedLikedIds,
+        likedIds: currentlyLiked
+          ? { set: likedIds.filter((id) => id !== userId) }
+          : { push: userId },
       },
     });
 
@@ -171,16 +169,15 @@ export const toggleStar = async (postId: string): Promise<ToggleStarResult> => {
 
     const starIds = post.starIds ?? [];
     const currentlyStarred = starIds.includes(userId);
-    const updatedStarIds = currentlyStarred
-      ? starIds.filter((id) => id !== userId)
-      : [...starIds, userId];
 
     await prisma.post.update({
       where: {
         id: postId,
       },
       data: {
-        starIds: updatedStarIds,
+        starIds: currentlyStarred
+          ? { set: starIds.filter((id) => id !== userId) }
+          : { push: userId },
       },
     });
 

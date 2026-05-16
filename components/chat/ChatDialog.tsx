@@ -10,7 +10,9 @@ import { Button } from "@/components/ui/button";
 const ChatDialog = () => {
   const isOpen = useChatStore((state) => state.isOpen);
   const isCollapsed = useChatStore((state) => state.isCollapsed);
-  const currentConversationId = useChatStore((state) => state.currentConversationId);
+  const currentConversationId = useChatStore(
+    (state) => state.currentConversationId,
+  );
   const close = useChatStore((state) => state.close);
   const open = useChatStore((state) => state.open);
   const toggleCollapse = useChatStore((state) => state.toggleCollapse);
@@ -25,19 +27,12 @@ const ChatDialog = () => {
       )}
     >
       {/* Custom Header */}
-      <div
-        role="button"
-        tabIndex={0}
+      <button
+        type="button"
+        className="h-12 px-4 flex items-center justify-between border-b border-[#30363D] bg-[#262D34] cursor-pointer w-full"
         aria-expanded={!isCollapsed}
         aria-label={isCollapsed ? "Expand chat" : "Collapse chat"}
-        className="h-12 px-4 flex items-center justify-between border-b border-[#30363D] bg-[#262D34] cursor-pointer"
         onClick={() => toggleCollapse()}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            toggleCollapse();
-          }
-        }}
       >
         <div className="flex items-center gap-2 overflow-hidden">
           {/* If collapsed and has conversation, show context (Option B) */}
@@ -82,7 +77,7 @@ const ChatDialog = () => {
             <X className="h-4 w-4" />
           </Button>
         </div>
-      </div>
+      </button>
 
       {/* Main Content (Hidden when collapsed) */}
       <div

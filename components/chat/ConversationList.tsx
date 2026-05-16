@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetConversations } from "@/hooks/use-get-conversations";
-import useChatStore from "@/store/use-chat-store";
+import { useChatCurrentConversationId, useChatActions } from "@/store/use-chat-store";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -12,8 +12,8 @@ import { ConversationWithParticipants } from "@/types";
 const ConversationList = () => {
   const { data: session } = authClient.useSession();
   const { data: conversations, isLoading } = useGetConversations();
-  const currentConversationId = useChatStore((state) => state.currentConversationId);
-  const open = useChatStore((state) => state.open);
+  const currentConversationId = useChatCurrentConversationId();
+  const { open } = useChatActions();
 
   const currentUser = session?.user;
 

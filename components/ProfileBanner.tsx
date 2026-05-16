@@ -9,7 +9,7 @@ import { UserProfileUser } from "@/types";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { LoginModal } from "@/components/auth/LoginModal";
-import useChatStore from "@/store/use-chat-store";
+import { useChatActions } from "@/store/use-chat-store";
 import { createConversation } from "@/actions/create-conversation";
 
 type Props = {
@@ -33,7 +33,7 @@ export const ProfileBanner = ({
   const [isPending, startTransition] = useTransition();
   const [hasFollowed, setHasFollowed] = useState(isFollowing);
   const { data: session } = authClient.useSession();
-  const openChat = useChatStore((state) => state.open);
+  const { open: openChat } = useChatActions();
 
   const handleFollow = async () => {
     const { error, followed, success } = await toggleFollow(user.id);

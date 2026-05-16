@@ -1,6 +1,11 @@
 "use client";
 
-import useChatStore from "@/store/use-chat-store";
+import useChatStore, {
+  useChatIsOpen,
+  useChatIsCollapsed,
+  useChatCurrentConversationId,
+  useChatActions,
+} from "@/store/use-chat-store";
 import ConversationList from "./ConversationList";
 import MessageThread from "./MessageThread";
 import { cn } from "@/lib/utils";
@@ -8,14 +13,10 @@ import { ChevronLeft, X, Minus, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ChatDialog = () => {
-  const isOpen = useChatStore((state) => state.isOpen);
-  const isCollapsed = useChatStore((state) => state.isCollapsed);
-  const currentConversationId = useChatStore(
-    (state) => state.currentConversationId,
-  );
-  const close = useChatStore((state) => state.close);
-  const open = useChatStore((state) => state.open);
-  const toggleCollapse = useChatStore((state) => state.toggleCollapse);
+  const isOpen = useChatIsOpen();
+  const isCollapsed = useChatIsCollapsed();
+  const currentConversationId = useChatCurrentConversationId();
+  const { close, open, toggleCollapse } = useChatActions();
 
   if (!isOpen) return null;
 

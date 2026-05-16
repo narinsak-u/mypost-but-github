@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/ui/user-avatar";
-import useChatStore from "@/store/use-chat-store";
+import { useChatActions } from "@/store/use-chat-store";
 import { useGetConversations } from "@/hooks/use-get-conversations";
 import { ConversationWithParticipants } from "@/types";
 
@@ -39,7 +39,7 @@ const Nav = (props: Props) => {
   const postSearchReqId = useRef(0);
 
   const { data: userList } = useGetUserList();
-  const openChat = useChatStore((state) => state.open);
+  const { open: openChat } = useChatActions();
   const { data: conversations } = useGetConversations();
 
   const hasUnread = useMemo(() => {

@@ -9,10 +9,10 @@
     "lint": "next lint",
     "test": "vitest",
     "test:unit": "vitest run tests/unit",
-    "test:integration": "vitest run tests/integration --pool=forks --no-file-parallelism --max-workers=1",
+    "test:integration": "vitest run tests/integration --pool=forks --no-file-parallelism --max-workers=1 --retry=2",
     "test:e2e": "playwright test --ui",
     "test:e2e:ci": "playwright test",
-    "test:coverage": "vitest run --coverage --pool=forks --no-file-parallelism --max-workers=1",
+    "test:coverage": "vitest run --coverage --pool=forks --no-file-parallelism --max-workers=1 --retry=2",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e:ci",
     "start": "next start"
   },

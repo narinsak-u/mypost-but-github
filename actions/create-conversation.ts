@@ -41,15 +41,12 @@ export const createConversation = async (targetUserId: string) => {
     }
 
     // Create new conversation
-    // Prisma will handle the many-to-many connection in User.conversationIds
     const conversation = await prisma.conversation.create({
       data: {
         participantIds: [userId, targetUserId],
         participants: {
           connect: [
-    const conversation = await prisma.conversation.create({
-      data: {
-        participants: {
+            { id: userId },
             { id: targetUserId },
           ],
         },

@@ -59,7 +59,7 @@ test.describe("Post Creation Flow", () => {
     // 8. Verify success and post visibility
     await expect(page.getByText(/post has been created/i)).toBeVisible();
     
-    // Check if the post appears in the feed
-    await expect(page.getByText(title)).toBeVisible();
+    // Check if the post appears in the feed (use role link to be specific)
+    await expect(page.getByRole("link", { name: title })).toBeVisible();
   });
 });

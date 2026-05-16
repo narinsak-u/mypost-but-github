@@ -49,7 +49,6 @@ describe("Integration: follow-actions", () => {
       mockSession(follower.id);
 
       await toggleFollow(following.id);
-      await new Promise((resolve) => setTimeout(resolve, 50));
 
       const result = await toggleFollow(following.id);
 
@@ -103,9 +102,7 @@ describe("Integration: follow-actions", () => {
       mockSession(follower.id);
 
       await toggleFollow(following.id);
-      await new Promise((resolve) => setTimeout(resolve, 50));
       await toggleFollow(following.id);
-      await new Promise((resolve) => setTimeout(resolve, 50));
 
       const result = await getIsFollowing(following.id);
 

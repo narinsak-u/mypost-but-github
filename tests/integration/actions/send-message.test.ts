@@ -35,7 +35,9 @@ describe("Integration: send-message", () => {
       const user2 = await seedTestUser();
       mockSession(user1.id);
 
-      const conversation = await seedTestConversation([user1.id, user2.id]);
+      const conversation = await seedTestConversation([user1.id, user2.id], {
+        lastMessageAt: new Date(),
+      });
 
       const result = await sendMessage(conversation.id, "Hello, world!");
 

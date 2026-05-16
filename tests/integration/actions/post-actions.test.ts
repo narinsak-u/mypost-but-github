@@ -107,8 +107,7 @@ describe("Integration: post-actions", () => {
       const user = await seedTestUser();
       mockSession(user.id);
 
-      const post = await seedTestPost(user.id);
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      const post = await seedTestPost(user.id, { likedIds: [], starIds: [] });
 
       const result = await toggleLike(post.id);
 
@@ -126,8 +125,8 @@ describe("Integration: post-actions", () => {
 
       const post = await seedTestPost(user.id, {
         likedIds: [user.id],
+        starIds: [],
       });
-      await new Promise((resolve) => setTimeout(resolve, 100));
 
       const result = await toggleLike(post.id);
 
@@ -145,8 +144,7 @@ describe("Integration: post-actions", () => {
       const user = await seedTestUser();
       mockSession(user.id);
 
-      const post = await seedTestPost(user.id);
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      const post = await seedTestPost(user.id, { likedIds: [], starIds: [] });
 
       const result = await toggleStar(post.id);
 
@@ -163,9 +161,9 @@ describe("Integration: post-actions", () => {
       mockSession(user.id);
 
       const post = await seedTestPost(user.id, {
+        likedIds: [],
         starIds: [user.id],
       });
-      await new Promise((resolve) => setTimeout(resolve, 100));
 
       const result = await toggleStar(post.id);
 

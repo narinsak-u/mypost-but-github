@@ -1,69 +1,83 @@
 ![mypost-but-github](https://socialify.git.ci/alohadancemeow/mypost-but-github/image?forks=1&issues=1&language=1&name=1&owner=1&pulls=1&stargazers=1&theme=Light)
 
-# mypost-but-github ✌️
-A mini webboard inspired by GitHub + Pantip. 🚀
+# mypost-but-github
 
-Live demo: https://mypost-but-github.vercel.app 
+A mini social webboard inspired by GitHub + Pantip. Share ideas, ask questions, and engage with the community through posts, comments, and real-time messaging.
 
-### 🎉 Objective:
+**Live demo:** https://mypost-but-github.vercel.app
 
-- **Knowledge Sharing**: Users can create posts to share ideas, questions, and solutions with the community.
-- **Engagement**: Foster interaction through functionalities like liking, commenting, and starring posts.
+## Features
 
-## ✨ Features
+### Posts & Content
 
-- Clerk authentication (sign in / sign up)
-- Create posts (rich text editor), optional tags
-- Feed with tabs (For You / Following)
-- Like + Star posts
-- Comments
-- Follow / unfollow users
-- User profiles (overview + starred)
-- Search users and posts (Atlas Search when available; falls back to Prisma contains query)
+- **Rich text editor** powered by BlockNote for creating formatted posts
+- **Optional tags** to categorize content
+- **Feed tabs** — "For You" (all posts) and "Following" (posts from followed users)
+- **Like & Star** posts to bookmark and show appreciation
+- **Comments** on posts with inline reply support
+- **Full post view** at `/post/[postId]`
 
-### 🍀 Technologies
+### Social
 
-- Development: [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/docs/installation), [Shadcn/ui](https://ui.shadcn.com/) 
-- Database: [MongoDB](https://www.mongodb.com/) with [Prisma](https://www.prisma.io/) for data modeling and interactions
-- Data Fetching: [TanStack Query (React Query)](https://tanstack.com/query/latest) for efficient data retrieval and management
-- Authentication: [Clerk](https://clerk.com/) for secure user login and management
-- Content Editing: [Blocknote](https://www.blocknotejs.org/) for a user-friendly content creation experience
+- **Follow / unfollow** users to curate your feed
+- **User profiles** with overview and starred posts tabs
+- **Who to Follow** suggestions on the home page
+- **Real-time direct messaging** with conversation list and message threads
 
-## Getting started
+### Search
 
-### 1) Install
+- **Search users and posts** with debounced real-time results
+- **MongoDB Atlas Search** for autocomplete with highlighted matches (falls back to Prisma `contains` query when Atlas is not available)
+
+### Authentication & UX
+
+- **Email/password + OAuth** (Google, GitHub) via Better Auth
+- **Dark theme** optimized for readability
+- **Responsive design** — works on mobile and desktop
+- **Keyboard navigation** and accessible UI components
+
+## Tech Stack
+
+| Category  | Technologies                              |
+| --------- | ----------------------------------------- |
+| Framework | Next.js 16 (App Router), React 19         |
+| Styling   | Tailwind CSS 4, shadcn/ui, Radix UI       |
+| Auth      | Better Auth                               |
+| Database  | MongoDB + Prisma 6                        |
+| State     | TanStack Query (server), Zustand (client) |
+| Forms     | React Hook Form + Zod                     |
+| Editor    | BlockNote                                 |
+| Testing   | Vitest + React Testing Library            |
+
+## Getting Started
+
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 2) Environment variables
+### 2. Set up environment variables
 
-Copy `.env.example` to `.env` and set the values you actually use.
-
-This project uses Clerk (not NextAuth). If your `.env.example` still contains NextAuth variables, you can ignore them.
-
-Required:
+Copy `.env.example` to `.env` and fill in your values:
 
 ```bash
-DATABASE_URL=""
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_..."
-CLERK_SECRET_KEY="sk_..."
-NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
-NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/"
+DATABASE_URL="mongodb+srv://..."
+BETTER_AUTH_SECRET="..."
+BETTER_AUTH_URL="http://localhost:3000"
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
+GITHUB_CLIENT_ID="..."
+GITHUB_CLIENT_SECRET="..."
 ```
 
-### 3) Prisma
-
-This repo runs `prisma generate` on install. To sync the schema to your database:
+### 3. Sync database
 
 ```bash
 npx prisma db push
 ```
 
-### 4) Run locally
+### 4. Run locally
 
 ```bash
 npm run dev
@@ -71,48 +85,65 @@ npm run dev
 
 Open http://localhost:3000
 
-## Scripts
+## Available Scripts
 
-- `npm run dev` - start dev server
-- `npm run build` - production build
-- `npm run start` - start production server
-- `npm run lint` - run Next.js lint
+| Command             | Description             |
+| ------------------- | ----------------------- |
+| `npm run dev`       | Start dev server        |
+| `npm run build`     | Production build        |
+| `npm run start`     | Start production server |
+| `npm run lint`      | Run Next.js ESLint      |
+| `npm run test`      | Run Vitest tests        |
+| `npx prisma studio` | Open database GUI       |
 
-## MongoDB Atlas Search (optional)
+## Project Structure
 
-Post search uses a MongoDB Atlas `$search` autocomplete pipeline when available (index name: `default` on the `Post` collection). If Atlas Search is not configured, the app automatically falls back to a Prisma `contains` search.
+```
+├── actions/           # Server Actions
+├── app/               # Next.js App Router pages
+│   ├── (home)/        # Home feed
+│   ├── (userProfile)/ # User profiles
+│   ├── post/          # Individual post view
+│   └── api/           # API routes (posts, auth, user)
+├── components/        # React components
+│   ├── ui/            # shadcn/ui primitives
+│   ├── posts/         # Post rendering
+│   ├── comments/      # Comment system
+│   ├── chat/          # Direct messaging
+│   └── nav/           # Navigation & search
+├── hooks/             # Custom React hooks
+├── lib/               # Utilities (Prisma, auth, utils)
+├── providers/         # React context providers
+├── store/             # Zustand stores
+├── types/             # TypeScript types + Zod validators
+└── prisma/            # Database schema
+```
 
-### 1. Enable Atlas Search (UI)
+## MongoDB Atlas Search (Optional)
 
-1. Go to MongoDB Atlas
-2. Select your cluster
-3. Click Search
-4. Click Create Search Index
-5. Choose:
-   - Database
-   - Collection (eg. Post)
-6. Use JSON editor
+Post search uses MongoDB Atlas `$search` autocomplete when available (index name: `default` on the `Post` collection). If not configured, the app falls back to Prisma `contains` search.
 
-**Example Search Index Definition:**
-```js
+### Create Search Index
+
+1. Go to MongoDB Atlas → your cluster → Search
+2. Click **Create Search Index**
+3. Select database and collection (`Post`)
+4. Use JSON editor:
+
+```json
 {
   "mappings": {
     "dynamic": false,
     "fields": {
-      "title": {
-        "type": "autocomplete"
-      },
-      "body": {
-        "type": "string"
-      }
+      "title": { "type": "autocomplete" },
+      "body": { "type": "string" }
     }
   }
 }
 ```
-- "type": "autocomplete" - Perfect for search-as-you-type.
 
+### Highlight Search Results
 
-**Highlight Search Results (Useful for UI highlighting):**
 ```js
 $search: {
   text: {
@@ -125,67 +156,8 @@ $search: {
 }
 ```
 
-### 2. Use Atlas Search with Prisma:
-```ts
-// actions/search-posts-atlas.ts
-
-"use server";
-
-import { prisma } from "@/lib/prisma";
-
-export async function searchPostsAutocomplete(query: string) {
-  if (!query) return [];
-
-  const result = await prisma.$runCommandRaw({
-    aggregate: "Post",
-    pipeline: [
-      {
-        $search: {
-          index: "default",
-          autocomplete: {
-            query,
-            path: "title",
-            fuzzy: {
-              maxEdits: 1
-            }
-          },
-          highlight: {
-             path: ["title", "body"],
-          },
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          title: 1,
-          content: 1,
-          highlights: { $meta: "searchHighlights" },
-          score: { $meta: "searchScore" }
-        }
-      },
-      { $limit: 8 }
-    ],
-    cursor: {}
-  });
-
-  return result.cursor.firstBatch as any[];
-}
-```
-
-- Prisma does not directly support `$search`
-- But Prisma lets you run raw MongoDB commands
-- read more: [Atlas Search](https://www.mongodb.com/products/platform/atlas-search)
-
-## ✅ What You Now Have
-
-- ✅ Next.js (App Router)
-- ✅ MongoDB Atlas Search (search-as-you-type)
-- ✅ Prisma (MongoDB)
-- ✅ Server Actions
-- ✅ Debounced real-time UI
-- ✅ Highlighted matched text
-- ✅ Keyboard navigation
+> Note: Prisma doesn't natively support `$search`, but you can run raw MongoDB commands via `prisma.$runCommandRaw()`. See [Atlas Search docs](https://www.mongodb.com/products/platform/atlas-search) for more.
 
 ## Screenshots
 
-![Home](/frontend/public/screenshot.png)
+![Home](/public/screenshot.png)

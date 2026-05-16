@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { db as prisma } from "@/lib/prismadb";
 
@@ -10,15 +10,18 @@ const getUserStars = async (userId: string) => {
       },
       select: {
         starIds: true,
-      }
+      },
     });
 
     // get all starIds from user posts
-    const starCount = posts.reduce((sum, p) => sum + (p.starIds?.length ?? 0), 0);
+    const starCount = posts.reduce(
+      (sum, p) => sum + (p.starIds?.length ?? 0),
+      0,
+    );
 
     return { starCount };
   } catch (error) {
-    console.log(error);
+    console.error("GET_USER_STARS_ERROR", error);
     return { starCount: 0 };
   }
 };

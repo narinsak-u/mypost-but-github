@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { db as prisma } from "@/lib/prismadb";
 
@@ -15,7 +15,7 @@ const getPostById = async (postId: string) => {
 
     return post;
   } catch (error) {
-    console.log(error);
+    console.error("GET_POST_BY_ID_ERROR", error);
     return [];
   }
 };

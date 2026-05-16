@@ -85,7 +85,7 @@ export const getUserFollowers = async (userId: string) => {
     });
     return { followersCount: followers.length };
   } catch (error) {
-    console.log(error);
+    console.error("GET_USER_FOLLOWERS_ERROR", error);
     return { followersCount: 0 };
   }
 };
@@ -100,7 +100,7 @@ export const getUserFollowing = async (userId: string) => {
     });
     return { followingCount: following.length };
   } catch (error) {
-    console.log(error);
+    console.error("GET_USER_FOLLOWING_ERROR", error);
     return { followingCount: 0 };
   }
 };

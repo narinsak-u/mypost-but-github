@@ -10,12 +10,12 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Stability' (Protocol in workflow.md) 841aecd
 
 ## Phase 2: UI/UX Enhancements
-- [ ] Task: Implement Smooth Scrolling
-    - [ ] Add `use-chat-scroll` hook to manage scroll position.
-    - [ ] Integrate hook into `MessageThread.tsx`.
-- [ ] Task: Add Loading & Empty States
-    - [ ] Create `MessageSkeleton.tsx`.
-    - [ ] Implement empty state for new conversations.
+- [x] Task: Implement Smooth Scrolling 18f72a7
+    - [x] Add `use-chat-scroll` hook to manage scroll position.
+    - [x] Integrate hook into `MessageThread.tsx`.
+- [x] Task: Add Loading & Empty States 18f72a7
+    - [x] Create `MessageSkeleton.tsx`.
+    - [x] Implement empty state for new conversations.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: UI/UX Enhancements' (Protocol in workflow.md)
 
 ## Phase 3: Polish & Mobile Optimization

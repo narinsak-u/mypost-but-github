@@ -57,11 +57,18 @@ const Nav = (props: Props) => {
 
   // memoize filtered users to avoid unnecessary re-renders
   const filteredUsers = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
+    type FilteredUser = {
+      id: string;
+      name: string;
+      handle: string;
+      imageUrl: string;
+    };
 
-    const users = (userList ?? [])
-      .map((u: any) => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [] as FilteredUser[];
+
+    const users: FilteredUser[] = (userList ?? [])
+      .map((u) => {
         const name = u.name || u.email?.split("@")[0] || "User";
         const handle = `@${name.replace(/\s+/g, "")}`;
 
@@ -72,10 +79,10 @@ const Nav = (props: Props) => {
           imageUrl: u.image || "",
         };
       })
-      .filter((u: any) => u.id && u.name);
+      .filter((u) => u.id && u.name);
 
     return users
-      .filter((u: any) => `${u.name} ${u.handle}`.toLowerCase().includes(q))
+      .filter((u) => `${u.name} ${u.handle}`.toLowerCase().includes(q))
       .slice(0, 8);
   }, [query, userList]);
 

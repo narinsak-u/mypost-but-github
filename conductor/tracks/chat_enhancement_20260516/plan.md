@@ -4,9 +4,9 @@
 - [x] Task: Refactor Chat Store for Performance afb4260
     - [x] Update `use-chat-store.ts` to support atomic selectors.
     - [x] Verify no regressions in `ChatDialog.tsx`.
-- [ ] Task: Unit Testing for Chat Actions
-    - [ ] Write tests for `send-message.ts`.
-    - [ ] Write tests for `get-messages.ts`.
+- [x] Task: Unit Testing for Chat Actions c252827
+    - [x] Write tests for `send-message.ts`.
+    - [x] Write tests for `get-messages.ts`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Stability' (Protocol in workflow.md)
 
 ## Phase 2: UI/UX Enhancements

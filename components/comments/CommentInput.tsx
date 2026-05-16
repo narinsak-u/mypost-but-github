@@ -6,7 +6,6 @@ import { UserAvatar } from "@/components/ui/user-avatar";
 import { Input } from "@/components/ui/input";
 import { createComment } from "@/actions/comment-actions";
 import { useValidateQuery } from "@/hooks/use-revalidate-query";
-import { useRouter } from "next/navigation";
 import { PostPopulated } from "@/types";
 
 const CommentInput = ({ post }: { post: PostPopulated }) => {
@@ -14,7 +13,6 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
   const [isPending, startTransition] = useTransition();
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
-  const { refresh } = useRouter();
 
   const { validatePostQueries } = useValidateQuery();
 
@@ -33,7 +31,6 @@ const CommentInput = ({ post }: { post: PostPopulated }) => {
           ...post,
           comments: [...post.comments, comment],
         });
-        refresh();
       }
     } catch (error) {
       console.log(error);

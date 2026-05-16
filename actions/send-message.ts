@@ -5,7 +5,8 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 
-async function getUserId(): Promise<string | null> {
+// Move to a shared utility like @/lib/auth-utils.ts
+export async function getUserId(): Promise<string | null> {
   const session = await auth.api.getSession({
     headers: await headers(),
   });

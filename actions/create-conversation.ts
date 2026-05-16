@@ -47,7 +47,9 @@ export const createConversation = async (targetUserId: string) => {
         participantIds: [userId, targetUserId],
         participants: {
           connect: [
-            { id: userId },
+    const conversation = await prisma.conversation.create({
+      data: {
+        participants: {
             { id: targetUserId },
           ],
         },

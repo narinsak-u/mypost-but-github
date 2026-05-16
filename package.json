@@ -8,6 +8,12 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "test": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "playwright test --ui",
+    "test:e2e:ci": "playwright test",
+    "test:coverage": "vitest run --coverage",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e:ci",
     "start": "next start"
   },
   "dependencies": {
@@ -55,6 +61,7 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@types/bcrypt": "^6.0.0",
